@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		400AA0E42A8CC36A000824B0 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 400AA0E32A8CC36A000824B0 /* CollectionViewCell.swift */; };
 		406281FA2A8CBCF600C772A6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406281F92A8CBCF600C772A6 /* AppDelegate.swift */; };
 		406281FC2A8CBCF600C772A6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406281FB2A8CBCF600C772A6 /* SceneDelegate.swift */; };
 		406281FE2A8CBCF600C772A6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406281FD2A8CBCF600C772A6 /* ViewController.swift */; };
@@ -36,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		400AA0E32A8CC36A000824B0 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		406281F62A8CBCF600C772A6 /* Shorts-Player.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Shorts-Player.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		406281F92A8CBCF600C772A6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		406281FB2A8CBCF600C772A6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -106,6 +108,7 @@
 				406282072A8CBCF800C772A6 /* LaunchScreen.storyboard */,
 				4062820A2A8CBCF800C772A6 /* Info.plist */,
 				406282022A8CBCF600C772A6 /* Shorts_Player.xcdatamodeld */,
+				400AA0E32A8CC36A000824B0 /* CollectionViewCell.swift */,
 			);
 			path = "Shorts-Player";
 			sourceTree = "<group>";
@@ -257,6 +260,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				400AA0E42A8CC36A000824B0 /* CollectionViewCell.swift in Sources */,
 				406281FE2A8CBCF600C772A6 /* ViewController.swift in Sources */,
 				406282042A8CBCF600C772A6 /* Shorts_Player.xcdatamodeld in Sources */,
 				406281FA2A8CBCF600C772A6 /* AppDelegate.swift in Sources */,
