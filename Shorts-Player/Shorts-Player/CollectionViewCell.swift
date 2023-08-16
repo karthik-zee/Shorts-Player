@@ -38,4 +38,6 @@ class CollectionViewCell: UICollectionViewCell {
             titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
+    
+    
 }
