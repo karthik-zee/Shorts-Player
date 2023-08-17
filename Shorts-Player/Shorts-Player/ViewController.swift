@@ -11,19 +11,23 @@ struct VideoModel {
     let caption: String
 }
 
+let customColor = UIColor(red: 15/255.0, green: 6/255.0, blue: 23/255.0, alpha: 1.0)
+
 class ViewController: UIViewController {
     
     private var topBar:UIView = {
         let view = UIView()
-        view.backgroundColor = .systemCyan
+        view.backgroundColor = customColor
         return view
     }()
     
     private var bottomBar:UIView = {
         let view = UIView()
-        view.backgroundColor = .systemCyan
+        view.backgroundColor = customColor
         return view
     }()
+    
+    
     
     private var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -45,6 +49,8 @@ class ViewController: UIViewController {
         setupTopBar()
         setupBottomBar()
         
+        
+        
     }
     
     override func viewDidLayoutSubviews() {
@@ -52,6 +58,7 @@ class ViewController: UIViewController {
         
         collectionView.frame = view.bounds
     }
+    
     
     
     private func setupTopBar(){
@@ -109,7 +116,6 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
         cell.titleLabel.text = "sgewg"
         return cell
     }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let itemWidth = collectionView.bounds.width
         let itemHeight = collectionView.bounds.height
