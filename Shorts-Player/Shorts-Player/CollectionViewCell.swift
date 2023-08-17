@@ -11,6 +11,13 @@ class CollectionViewCell: UICollectionViewCell {
     
     static let identifier = "CollectionViewCell"
     
+    let volumeMuteButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "volumeMute"), for: .normal)
+        button.setImage(UIImage(named: "volumeIcon"), for: .selected)
+        return button
+    }()
+    
     let movieDescriptionLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
@@ -119,34 +126,39 @@ class CollectionViewCell: UICollectionViewCell {
     }
 
     private func setupVolumeMuteButton() {
-        let volumeMuteImage: UIImageView = {
-            let image = UIImageView()
-            image.image = UIImage(named: "volumeMute")
-            return image
-        }()
-        
-        print(contentView.frame.width)
-        print(contentView.frame.height)
-        
-        contentView.addSubview(volumeMuteImage)
-        volumeMuteImage.translatesAutoresizingMaskIntoConstraints = false
+        volumeMuteButton.addTarget(self, action: #selector(unmuteButtonTapped), for: .touchUpInside)
+        contentView.addSubview(volumeMuteButton)
+        volumeMuteButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            volumeMuteImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 329),
-            volumeMuteImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 63)
+            volumeMuteButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 329),
+            volumeMuteButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 63),
+            volumeMuteButton.widthAnchor.constraint(equalToConstant: 40), // Set width
+            volumeMuteButton.heightAnchor.constraint(equalToConstant: 40) // Set height
         ])
-        
     }
+
+    @objc private func unmuteButtonTapped() {
+        // Toggle the isSelected state of the button
+        volumeMuteButton.isSelected = !volumeMuteButton.isSelected
+
+    }
+
+
     private func setupChevronButton(){
-        let chevronLeft: UIImageView = {
-            let image = UIImageView()
-            image.image = UIImage(named: "chevronButton")
-            return image
+        let chevronLeftButton: UIButton = {
+            let button = UIButton()
+            button.setImage(UIImage(named: "chevronButton"), for: .normal)
+           // button.addTarget(self, action: #selector(chevronButtonTapped), for: .touchUpInside)
+            return button
         }()
-        contentView.addSubview(chevronLeft)
-        chevronLeft.translatesAutoresizingMaskIntoConstraints = false
+        
+        contentView.addSubview(chevronLeftButton)
+        chevronLeftButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            chevronLeft.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            chevronLeft.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 63)
+            chevronLeftButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            chevronLeftButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 63),
+            chevronLeftButton.widthAnchor.constraint(equalToConstant: 40), // Set width
+            chevronLeftButton.heightAnchor.constraint(equalToConstant: 40) // Set height
         ])
     }
     
@@ -165,7 +177,7 @@ class CollectionViewCell: UICollectionViewCell {
     }
     
     private var watchStackView: UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [watchImage, watchLabel])
+        let stackView = UIStackView(arrangedSubviews: [watchButton, watchLabel])
         stackView.axis = .vertical
         stackView.alignment = .center
         stackView.spacing = 6
@@ -173,7 +185,7 @@ class CollectionViewCell: UICollectionViewCell {
     }
     
     private var myListStackView: UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [myListImage, myListLabel])
+        let stackView = UIStackView(arrangedSubviews: [myListButton, myListLabel])
         stackView.axis = .vertical
         stackView.alignment = .center
         stackView.spacing = 6
@@ -181,26 +193,47 @@ class CollectionViewCell: UICollectionViewCell {
     }
     
     private var shareStackView: UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [shareImage, shareLabel])
+        let stackView = UIStackView(arrangedSubviews: [shareButton, shareLabel])
         stackView.axis = .vertical
         stackView.alignment = .center
         stackView.spacing = 6
         return stackView
     }
     
-    private var watchImage: UIImageView {
-        let image = UIImageView(image: UIImage(named: "watch"))
-        return image
+    private var watchButton: UIButton {
+        let button = UIButton()
+        button.setImage(UIImage(named: "watch"), for: .normal)
+        button.setImage(UIImage(named: "onClickWatch"), for: .highlighted)
+        button.addTarget(self, action: #selector(watchButtonTapped), for: .touchUpInside)
+        return button
     }
-    
-    private var myListImage: UIImageView {
-        let image = UIImageView(image: UIImage(named: "addToPlaylist"))
-        return image
+
+    private var myListButton: UIButton {
+        let button = UIButton()
+        button.setImage(UIImage(named: "playlist"), for: .normal)
+        button.setImage(UIImage(named: "onClickPlaylist"), for: .highlighted)
+        button.addTarget(self, action: #selector(myListButtonTapped), for: .allTouchEvents)
+        return button
     }
-    
-    private var shareImage: UIImageView {
-        let image = UIImageView(image: UIImage(named: "iosShare"))
-        return image
+
+    private var shareButton: UIButton {
+        let button = UIButton()
+        button.setImage(UIImage(named: "share"), for: .normal)
+        button.setImage(UIImage(named: "onClickShare"), for: .highlighted)
+        button.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
+        return button
+    }
+
+    @objc private func watchButtonTapped() {
+        //function to handle watch button
+    }
+
+    @objc private func myListButtonTapped() {
+        //function body to handle playlistbutton tap
+    }
+
+    @objc private func shareButtonTapped() {
+        //function body to handle sharebutton tap
     }
     
     private var watchLabel: UILabel {

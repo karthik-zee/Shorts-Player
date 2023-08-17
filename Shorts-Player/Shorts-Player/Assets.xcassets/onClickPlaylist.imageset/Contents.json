@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "ios_share.png",
+      "filename" : "onClickPlaylist.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "ios_share@2x.png",
+      "filename" : "onClickPlaylist@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "ios_share@3x.png",
+      "filename" : "onClickPlaylist@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
