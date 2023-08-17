@@ -49,7 +49,10 @@ class ViewController: UIViewController {
         setupTopBar()
         setupBottomBar()
         
-        
+        for family in UIFont.familyNames.sorted() {
+            let names = UIFont.fontNames(forFamilyName: family)
+            print("Family: \(family) Font names: \(names)")
+        }
         
     }
     
@@ -113,7 +116,10 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
         cell.backgroundColor = .blue
-        cell.titleLabel.text = "sgewg"
+        cell.movieDescriptionLabel.text = "Spiderman arrives to rescue the town from venom"
+        cell.titleLabel.text = "Sipderman: homecoming"
+        cell.genreLabel.text = "Action"
+        cell.ratingLabel.text = "U/A 7+"
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

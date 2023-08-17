@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Group 5.png",
+      "filename" : "watch.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Group 5@2x.png",
+      "filename" : "watch@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Group 5@3x.png",
+      "filename" : "watch@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
