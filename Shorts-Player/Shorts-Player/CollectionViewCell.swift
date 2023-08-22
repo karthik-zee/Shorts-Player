@@ -12,6 +12,9 @@ class CollectionViewCell: UICollectionViewCell {
     
     static let identifier = "CollectionViewCell"
     
+    private var avPlayer: AVPlayer?
+    private var avPlayerLayer: AVPlayerLayer?
+    
     public var videoURL:String = "https://zshorts-dev.zee5.com/zshorts/file2/index.m3u8"
     
     let videoView: UIView = {
@@ -91,10 +94,7 @@ class CollectionViewCell: UICollectionViewCell {
     
     private func setupVideoView(){
         contentView.addSubview(videoView)
-        
-        
-        var avPlayer: AVPlayer?
-        var avPlayerLayer: AVPlayerLayer?
+        videoURL = "https://zshorts-dev.zee5.com/zshorts/file2/index.m3u8"
         if let avAssetURL = URL(string: videoURL) {
             let asset = AVURLAsset(url: avAssetURL)
             let playerItem = AVPlayerItem(asset: asset)
@@ -306,6 +306,13 @@ class CollectionViewCell: UICollectionViewCell {
         genreLabel.text = "Action"
         ratingLabel.text = "7.0"
         videoURL = model.assetDetails.videoUri.avcUri
+        
+        if let avAssetURL = URL(string: videoURL) {
+            let asset = AVURLAsset(url: avAssetURL)
+            let playerItem = AVPlayerItem(asset: asset)
+            avPlayer?.replaceCurrentItem(with: playerItem)
+            avPlayer?.play() // Play the new video
+        }
     }
 }
 //"assets": [
