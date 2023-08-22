@@ -10,13 +10,11 @@ import Foundation
 class APICaller {
     static let shared = APICaller()
     
-    var avcURI: [String] = []
-    
-    func fetchVideos(){
+    func fetchVideos(completion: @escaping ([Asset]) -> Void) {
         let urlString = "https://zshorts-dev.zee5.com/v1/zShorts"
         
         if let url = URL(string: urlString) {
-            URLSession.shared.dataTask(with: url) { [weak self] data, response, error in
+            URLSession.shared.dataTask(with: url) { data, response, error in
                 guard let data = data, error == nil else {
                     print("Error fetching video URLs:", error?.localizedDescription ?? "")
                     return
@@ -26,14 +24,16 @@ class APICaller {
                     let decoder = JSONDecoder()
                     let responseData = try decoder.decode(ResponseData.self, from: data)
                     
-                    // Now you can access the video URLs
+                    var videoItems: [Asset] = []
+                    
                     for asset in responseData.assets {
-                        let avcUri = asset.assetDetails.videoUri.avcUri
-                        let hevcUri = asset.assetDetails.videoUri.hevcUri
-                        self?.avcURI.append(avcUri)
+                        let item = asset
+                        videoItems.append(item)
                     }
                     
-                    print("Videos array:", self?.avcURI ?? [])
+                    // Call the completion closure with the avcURI array
+                    completion(videoItems)
+                    
                 } catch {
                     print("Error decoding JSON: \(error)")
                 }

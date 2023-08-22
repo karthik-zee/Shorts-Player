@@ -6,10 +6,20 @@
 //
 
 import UIKit
+import AVFoundation
 
 class CollectionViewCell: UICollectionViewCell {
     
     static let identifier = "CollectionViewCell"
+    
+    public var videoURL:String = "https://zshorts-dev.zee5.com/zshorts/file2/index.m3u8"
+    
+    let videoView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .green
+        var videoURL:String
+        return view
+    }()
     
     let volumeMuteButton: UIButton = {
         let button = UIButton()
@@ -67,6 +77,7 @@ class CollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupVideoView()
         setupSubviews()
         setupIconStackView()
         setupChevronButton()
@@ -76,6 +87,34 @@ class CollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupVideoView(){
+        contentView.addSubview(videoView)
+        
+        
+        var avPlayer: AVPlayer?
+        var avPlayerLayer: AVPlayerLayer?
+        if let avAssetURL = URL(string: videoURL) {
+            let asset = AVURLAsset(url: avAssetURL)
+            let playerItem = AVPlayerItem(asset: asset)
+            avPlayer = AVPlayer(playerItem: playerItem)
+        }
+        avPlayerLayer = AVPlayerLayer(player: avPlayer)
+        let playerLayerFrame = CGRect(x: 0, y: 0, width: contentView.bounds.width, height: contentView.bounds.height)
+        avPlayerLayer?.frame = playerLayerFrame
+        avPlayerLayer?.videoGravity = .resizeAspectFill
+        avPlayerLayer?.backgroundColor = .init(red: 1, green: 0, blue: 0, alpha: 0.6)
+        avPlayer?.play()
+        videoView.layer.addSublayer(avPlayerLayer!)
+        
+        videoView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            videoView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            videoView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            videoView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            videoView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+        ])
     }
     
     private func setupSubviews() {
@@ -114,6 +153,7 @@ class CollectionViewCell: UICollectionViewCell {
         verticalStackView.axis = .vertical
         //verticalStackView.alignment = .fill
         verticalStackView.spacing = 0 // Adjust the spacing between cells
+        verticalStackView.distribution = .fillProportionally
         
         contentView.addSubview(verticalStackView)
         verticalStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -258,6 +298,14 @@ class CollectionViewCell: UICollectionViewCell {
         label.textColor = .white
         label.textAlignment = .center
         return label
+    }
+    
+    public func configure(with model:Asset){
+        movieDescriptionLabel.text = model.assetDetails.description
+        titleLabel.text = model.assetDetails.title
+        genreLabel.text = "Action"
+        ratingLabel.text = "7.0"
+        videoURL = model.assetDetails.videoUri.avcUri
     }
 }
 //"assets": [

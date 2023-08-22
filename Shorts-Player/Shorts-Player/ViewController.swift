@@ -15,6 +15,8 @@ let customColor = UIColor(red: 15/255.0, green: 6/255.0, blue: 23/255.0, alpha: 
 
 class ViewController: UIViewController {
     
+    var assets: [Asset] = [Asset]()
+    
     private var topBar:UIView = {
         let view = UIView()
         view.backgroundColor = customColor
@@ -49,7 +51,21 @@ class ViewController: UIViewController {
         setupTopBar()
         setupBottomBar()
         
-        APICaller.shared.fetchVideos()
+        APICaller.shared.fetchVideos { [weak self] items in
+            // Use the avcURI array in your view controller
+            DispatchQueue.main.async {
+                // Here, you can update your UI or perform any other operations with avcURI
+                print("Fetched avcURI:", items)
+                
+                self?.assets = items
+                print(self?.assets)
+                self?.collectionView.reloadData()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    print("videos array after 2 seconds:", self?.assets)
+                }
+            }
+        }
+        print("videos array - after api call - ",self.assets)
     }
     
     override func viewDidLayoutSubviews() {
@@ -106,16 +122,12 @@ class ViewController: UIViewController {
 
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 50
+        return assets.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
-        cell.backgroundColor = .lightGray
-        cell.movieDescriptionLabel.text = "Spiderman arrives to rescue the town from venom"
-        cell.titleLabel.text = "Sipderman: homecoming"
-        cell.genreLabel.text = "Action"
-        cell.ratingLabel.text = "U/A 7+"
+        cell.configure(with: assets[indexPath.row])
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
