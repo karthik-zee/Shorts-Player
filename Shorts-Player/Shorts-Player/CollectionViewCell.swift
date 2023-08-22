@@ -113,7 +113,7 @@ class CollectionViewCell: UICollectionViewCell {
         ])
         verticalStackView.axis = .vertical
         //verticalStackView.alignment = .fill
-        verticalStackView.spacing = 4 // Adjust the spacing between cells
+        verticalStackView.spacing = 0 // Adjust the spacing between cells
         
         contentView.addSubview(verticalStackView)
         verticalStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -260,3 +260,29 @@ class CollectionViewCell: UICollectionViewCell {
         return label
     }
 }
+//"assets": [
+//      {
+//        "assetDetails": {
+//          "id": "0-0-1z5250002",
+//          "title": "Vyavastha",
+//          "description": "Hebah patel in Vyavastha",
+//          "duration": 45,
+//          "asset_type": 1,
+//          "thumbnails": [
+//            {
+//              "mainThumbnail": "1920x480-jhgkjhl"
+//            }
+//          ],
+//          "videoUri": {
+//            "avcUri": "https://zshorts-dev.zee5.com/zshorts/file1/index.m3u8",
+//            "hevcUri": "hevc.m3u8"
+//          },
+//          "parentAsset": {
+//            "id": "0-1-6z581703"
+//          },
+//          "page": {
+//            "cursor": "MTAxNTfxOTQ1tB"
+//          }
+//        }
+//      },
+//      ]
