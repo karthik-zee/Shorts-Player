@@ -18,6 +18,13 @@ class CollectionViewCell: UICollectionViewCell {
     
     public var videoURL:String = "https://zshorts-dev.zee5.com/zshorts/file2/index.m3u8"
     
+    let playButtonOverlay: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "playButton"))
+        imageView.contentMode = .scaleAspectFit
+        imageView.isHidden = true
+        return imageView
+    }()
+    
     let progressIndicator: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(red: 0.655, green: 0.522, blue: 1, alpha: 1)
@@ -96,6 +103,30 @@ class CollectionViewCell: UICollectionViewCell {
         setupProgressIndicator()
     }
     
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+
+        // Check if the tap is outside of existing buttons and stack views
+        if touches.first?.view == contentView {
+            togglePlayButtonOverlay()
+            togglePlayPauseVideo()
+        }
+    }
+    
+    private func togglePlayButtonOverlay() {
+        playButtonOverlay.isHidden.toggle()
+    }
+
+    private func togglePlayPauseVideo() {
+        if let avPlayer = avPlayer {
+            if avPlayer.rate == 0 { // Video is paused
+                avPlayer.play()
+            } else { // Video is playing
+                avPlayer.pause()
+            }
+        }
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -133,6 +164,11 @@ class CollectionViewCell: UICollectionViewCell {
     
     private func setupVideoView(){
         contentView.addSubview(videoView)
+        contentView.addSubview(playButtonOverlay)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(videoViewTapped))
+           videoView.addGestureRecognizer(tapGesture)
+
         videoURL = "https://zshorts-dev.zee5.com/zshorts/file2/index.m3u8"
         if let avAssetURL = URL(string: videoURL) {
             let asset = AVURLAsset(url: avAssetURL)
@@ -154,6 +190,20 @@ class CollectionViewCell: UICollectionViewCell {
             videoView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             videoView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
+        
+        playButtonOverlay.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            // Constraints to center the play button overlay
+            playButtonOverlay.centerXAnchor.constraint(equalTo: videoView.centerXAnchor),
+            playButtonOverlay.centerYAnchor.constraint(equalTo: videoView.centerYAnchor),
+            playButtonOverlay.widthAnchor.constraint(equalToConstant: 60), // Set width
+            playButtonOverlay.heightAnchor.constraint(equalToConstant: 60) // Set height
+        ])
+    }
+    
+    @objc private func videoViewTapped() {
+        togglePlayButtonOverlay()
+        togglePlayPauseVideo()
     }
     
     private func setupSubviews() {
