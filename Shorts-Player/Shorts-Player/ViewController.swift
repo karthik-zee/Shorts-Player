@@ -70,8 +70,6 @@ class ViewController: UIViewController {
             }
         }
         print("videos array - after api call - ",self.assets)
-//        collectionView.frame = view.bounds
-//        self.automaticallyAdjustsScrollViewInsets = false
         collectionView.contentInsetAdjustmentBehavior = .never
     }
     
@@ -143,9 +141,8 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.row == currentlyPlayingCellIndex {
-            (cell as? CollectionViewCell)?.stopVideoPlayback()
-            currentlyPlayingCellIndex = nil
+        if let videoCell = cell as? CollectionViewCell {
+            videoCell.avPlayer?.pause()
         }
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -154,13 +151,9 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
         return CGSize(width: itemWidth, height: itemHeight)
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let cell = collectionView.cellForItem(at: indexPath) as? CollectionViewCell {
-            if let currentlyPlayingCell = currentlyPlayingCell, currentlyPlayingCell != cell {
-                currentlyPlayingCell.isPlaying = false
-            }
-            cell.isPlaying.toggle()
-            currentlyPlayingCell = cell
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if let videoCell = cell as? CollectionViewCell {
+            videoCell.avPlayer?.play()
         }
     }
 }

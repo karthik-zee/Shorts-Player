@@ -21,7 +21,7 @@ class CollectionViewCell: UICollectionViewCell {
     static let identifier = "CollectionViewCell"
     
     private var progressIndicatorWidthConstraint: NSLayoutConstraint?
-    private var avPlayer: AVPlayer?
+    var avPlayer: AVPlayer?
     private var avPlayerLayer: AVPlayerLayer?
     
     public var videoURL:String = "https://zshorts-dev.zee5.com/zshorts/file2/index.m3u8"
@@ -111,18 +111,11 @@ class CollectionViewCell: UICollectionViewCell {
         setupProgressIndicator()
     }
     
-//    override func prepareForReuse() {
-//        super.prepareForReuse()
-//        avPlayer?.seek(to: .zero)
-//
-////        bigPauseButton.isHidden = true
-////
-////        slider.value = 0
-////
-////        muteButton.isSelected = false
-////
-////        addButton?.isSelected = false
-//    }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        avPlayer?.seek(to: .zero)
+        
+    }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
@@ -233,13 +226,6 @@ class CollectionViewCell: UICollectionViewCell {
     
     private func setupSubviews() {
         contentView.addSubview(movieDescriptionLabel)
-        
-        movieDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            movieDescriptionLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            movieDescriptionLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            movieDescriptionLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16)
-        ])
     }
     
     private func setupIconViews() {
@@ -247,8 +233,8 @@ class CollectionViewCell: UICollectionViewCell {
             titleLabel, dotLabel1, genreLabel, dotLabel2, ratingLabel
         ])
         horizontalStackView.axis = .horizontal
-        horizontalStackView.alignment = .center // Center-align items
-        horizontalStackView.distribution = .fillProportionally
+        horizontalStackView.alignment = .leading 
+        horizontalStackView.distribution = .equalCentering
         horizontalStackView.spacing = 0 // No spacing between items
         
         contentView.addSubview(horizontalStackView) // Only horizontalStackView is needed
@@ -267,15 +253,15 @@ class CollectionViewCell: UICollectionViewCell {
         verticalStackView.axis = .vertical
         //verticalStackView.alignment = .fill
         verticalStackView.spacing = 0 // Adjust the spacing between cells
-        verticalStackView.distribution = .fillProportionally
+        verticalStackView.distribution = .fillEqually
         
         contentView.addSubview(verticalStackView)
         verticalStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            verticalStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 630),
+            verticalStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 665),
             verticalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
             verticalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -89),
-            verticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -104)
+            verticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15)
         ])
     }
 
