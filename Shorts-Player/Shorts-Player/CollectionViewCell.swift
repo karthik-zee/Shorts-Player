@@ -26,8 +26,8 @@ class CollectionViewCell: UICollectionViewCell {
     
     let volumeMuteButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "volumeMute"), for: .normal)
-        button.setImage(UIImage(named: "volumeIcon"), for: .selected)
+        button.setImage(UIImage(named: "volumeMute"), for: .selected)
+        button.setImage(UIImage(named: "volumeIcon"), for: .normal)
         return button
     }()
     
@@ -166,6 +166,7 @@ class CollectionViewCell: UICollectionViewCell {
     }
 
     private func setupVolumeMuteButton() {
+        volumeMuteButton.isSelected = avPlayer?.isMuted ?? false
         volumeMuteButton.addTarget(self, action: #selector(unmuteButtonTapped), for: .touchUpInside)
         contentView.addSubview(volumeMuteButton)
         volumeMuteButton.translatesAutoresizingMaskIntoConstraints = false
@@ -180,6 +181,8 @@ class CollectionViewCell: UICollectionViewCell {
     @objc private func unmuteButtonTapped() {
         // Toggle the isSelected state of the button
         volumeMuteButton.isSelected = !volumeMuteButton.isSelected
+        
+        avPlayer?.isMuted = volumeMuteButton.isSelected
 
     }
 
@@ -313,6 +316,7 @@ class CollectionViewCell: UICollectionViewCell {
             avPlayer?.replaceCurrentItem(with: playerItem)
             avPlayer?.play() // Play the new video
         }
+        volumeMuteButton.isSelected = avPlayer?.isMuted ?? false
     }
 }
 //"assets": [
