@@ -102,16 +102,33 @@ class CollectionViewCell: UICollectionViewCell {
     
     private func setupProgressIndicator(){
         contentView.addSubview(progressIndicator)
-        
-        progressIndicator.translatesAutoresizingMaskIntoConstraints = false
-        //progressIndicatorWidthConstraint = progressIndicator.widthAnchor.constraint(equalToConstant: 0)
-        
-        NSLayoutConstraint.activate([
-            progressIndicator.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -56),
-            progressIndicator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            progressIndicator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            progressIndicator.heightAnchor.constraint(equalToConstant: 5)
+            
+            progressIndicator.translatesAutoresizingMaskIntoConstraints = false
+            
+            NSLayoutConstraint.activate([
+                progressIndicator.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -56),
+                progressIndicator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                progressIndicator.heightAnchor.constraint(equalToConstant: 5)
             ])
+            
+            progressIndicatorWidthConstraint = progressIndicator.widthAnchor.constraint(equalToConstant: 0)
+            progressIndicatorWidthConstraint?.isActive = true
+            
+            // Add observer for AVPlayer's currentTime
+            avPlayer?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.1, preferredTimescale: 600), queue: .main) { [weak self] time in
+                guard let duration = self?.avPlayer?.currentItem?.duration.seconds, duration > 0 else {
+                    return
+                }
+                let currentTime = time.seconds
+                let progress = currentTime / duration
+                self?.updateProgressIndicator(progress: progress)
+            }
+    }
+    
+    private func updateProgressIndicator(progress: Double) {
+        let maxWidth = contentView.bounds.width
+        let newWidth = maxWidth * CGFloat(progress)
+        progressIndicatorWidthConstraint?.constant = newWidth
     }
     
     private func setupVideoView(){
