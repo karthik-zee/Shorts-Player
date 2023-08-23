@@ -15,6 +15,10 @@ let customColor = UIColor(red: 15/255.0, green: 6/255.0, blue: 23/255.0, alpha: 
 
 class ViewController: UIViewController {
     
+    var currentlyPlayingCell: CollectionViewCell?
+    
+    private var currentlyPlayingCellIndex: Int?
+    
     var assets: [Asset] = [Asset]()
     
     private var topBar:UIView = {
@@ -47,10 +51,10 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupCollectionView()
         setupTopBar()
         setupBottomBar()
-        
+        setupCollectionView()
+
         APICaller.shared.fetchVideos { [weak self] items in
             // Use the avcURI array in your view controller
             DispatchQueue.main.async {
@@ -66,12 +70,14 @@ class ViewController: UIViewController {
             }
         }
         print("videos array - after api call - ",self.assets)
+//        collectionView.frame = view.bounds
+//        self.automaticallyAdjustsScrollViewInsets = false
+        collectionView.contentInsetAdjustmentBehavior = .never
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
-        collectionView.frame = view.bounds
     }
     
     
@@ -83,7 +89,7 @@ class ViewController: UIViewController {
             topBar.topAnchor.constraint(equalTo: view.topAnchor),
             topBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             topBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            topBar.bottomAnchor.constraint(equalTo: collectionView.topAnchor)
+            topBar.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     
@@ -91,7 +97,7 @@ class ViewController: UIViewController {
         view.addSubview(bottomBar)
         bottomBar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            bottomBar.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
+            bottomBar.heightAnchor.constraint(equalToConstant: 50),
             bottomBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             bottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -100,18 +106,19 @@ class ViewController: UIViewController {
     
     private func setupCollectionView() {
 
-        view.backgroundColor = .red
+//        view.backgroundColor = .red
         
         collectionView.dataSource = self
         collectionView.delegate = self
+//        collectionView.backgroundColor = .red
         
         view.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor,constant: 50),
+            collectionView.topAnchor.constraint(equalTo: topBar.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor,constant: -56)
+            collectionView.bottomAnchor.constraint(equalTo: bottomBar.topAnchor)
         ])
         
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
@@ -127,12 +134,33 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
+        
+        if indexPath.row != currentlyPlayingCellIndex {
+            cell.stopVideoPlayback()
+        }
+        print("from cellforitemat func-",indexPath.row)
         cell.configure(with: assets[indexPath.row])
         return cell
+    }
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.row == currentlyPlayingCellIndex {
+            (cell as? CollectionViewCell)?.stopVideoPlayback()
+            currentlyPlayingCellIndex = nil
+        }
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let itemWidth = collectionView.bounds.width
         let itemHeight = collectionView.bounds.height
         return CGSize(width: itemWidth, height: itemHeight)
-       }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let cell = collectionView.cellForItem(at: indexPath) as? CollectionViewCell {
+            if let currentlyPlayingCell = currentlyPlayingCell, currentlyPlayingCell != cell {
+                currentlyPlayingCell.isPlaying = false
+            }
+            cell.isPlaying.toggle()
+            currentlyPlayingCell = cell
+        }
+    }
 }

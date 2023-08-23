@@ -9,7 +9,15 @@ import UIKit
 import AVFoundation
 
 class CollectionViewCell: UICollectionViewCell {
-    
+    var isPlaying: Bool = false {
+        didSet {
+            if isPlaying {
+                avPlayer?.play()
+            } else {
+                avPlayer?.pause()
+            }
+        }
+    }
     static let identifier = "CollectionViewCell"
     
     private var progressIndicatorWidthConstraint: NSLayoutConstraint?
@@ -103,6 +111,19 @@ class CollectionViewCell: UICollectionViewCell {
         setupProgressIndicator()
     }
     
+//    override func prepareForReuse() {
+//        super.prepareForReuse()
+//        avPlayer?.seek(to: .zero)
+//
+////        bigPauseButton.isHidden = true
+////
+////        slider.value = 0
+////
+////        muteButton.isSelected = false
+////
+////        addButton?.isSelected = false
+//    }
+    
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
 
@@ -111,6 +132,10 @@ class CollectionViewCell: UICollectionViewCell {
             togglePlayButtonOverlay()
             togglePlayPauseVideo()
         }
+    }
+    
+    func stopVideoPlayback() {
+        avPlayer?.pause()
     }
     
     private func togglePlayButtonOverlay() {
@@ -137,7 +162,7 @@ class CollectionViewCell: UICollectionViewCell {
             progressIndicator.translatesAutoresizingMaskIntoConstraints = false
             
             NSLayoutConstraint.activate([
-                progressIndicator.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -56),
+                progressIndicator.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
                 progressIndicator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
                 progressIndicator.heightAnchor.constraint(equalToConstant: 5)
             ])
@@ -223,13 +248,13 @@ class CollectionViewCell: UICollectionViewCell {
         ])
         horizontalStackView.axis = .horizontal
         horizontalStackView.alignment = .center // Center-align items
-        horizontalStackView.distribution = .equalSpacing
+        horizontalStackView.distribution = .fillProportionally
         horizontalStackView.spacing = 0 // No spacing between items
         
         contentView.addSubview(horizontalStackView) // Only horizontalStackView is needed
         horizontalStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            horizontalStackView.topAnchor.constraint(equalTo: movieDescriptionLabel.bottomAnchor, constant: 0), // Adjust the spacing as needed
+            horizontalStackView.topAnchor.constraint(equalTo: movieDescriptionLabel.bottomAnchor, constant: 15), // Adjust the spacing as needed
             horizontalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
             horizontalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -89),
             horizontalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -104)
@@ -247,7 +272,7 @@ class CollectionViewCell: UICollectionViewCell {
         contentView.addSubview(verticalStackView)
         verticalStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            verticalStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 619),
+            verticalStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 630),
             verticalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
             verticalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -89),
             verticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -104)
@@ -261,7 +286,7 @@ class CollectionViewCell: UICollectionViewCell {
         volumeMuteButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             volumeMuteButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 329),
-            volumeMuteButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 63),
+            volumeMuteButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
             volumeMuteButton.widthAnchor.constraint(equalToConstant: 40), // Set width
             volumeMuteButton.heightAnchor.constraint(equalToConstant: 40) // Set height
         ])
@@ -288,7 +313,7 @@ class CollectionViewCell: UICollectionViewCell {
         chevronLeftButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             chevronLeftButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            chevronLeftButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 63),
+            chevronLeftButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
             chevronLeftButton.widthAnchor.constraint(equalToConstant: 40), // Set width
             chevronLeftButton.heightAnchor.constraint(equalToConstant: 40) // Set height
         ])
