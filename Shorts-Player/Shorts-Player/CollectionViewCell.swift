@@ -12,10 +12,17 @@ class CollectionViewCell: UICollectionViewCell {
     
     static let identifier = "CollectionViewCell"
     
+    private var progressIndicatorWidthConstraint: NSLayoutConstraint?
     private var avPlayer: AVPlayer?
     private var avPlayerLayer: AVPlayerLayer?
     
     public var videoURL:String = "https://zshorts-dev.zee5.com/zshorts/file2/index.m3u8"
+    
+    let progressIndicator: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 0.655, green: 0.522, blue: 1, alpha: 1)
+        return view
+    }()
     
     let videoView: UIView = {
         let view = UIView()
@@ -86,10 +93,25 @@ class CollectionViewCell: UICollectionViewCell {
         setupChevronButton()
         setupVolumeMuteButton()
         setupIconViews()
+        setupProgressIndicator()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupProgressIndicator(){
+        contentView.addSubview(progressIndicator)
+        
+        progressIndicator.translatesAutoresizingMaskIntoConstraints = false
+        //progressIndicatorWidthConstraint = progressIndicator.widthAnchor.constraint(equalToConstant: 0)
+        
+        NSLayoutConstraint.activate([
+            progressIndicator.bottomAnchor.constraint(equalTo: contentView.bottomAnchor,constant: -56),
+            progressIndicator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            progressIndicator.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            progressIndicator.heightAnchor.constraint(equalToConstant: 5)
+            ])
     }
     
     private func setupVideoView(){
@@ -315,33 +337,8 @@ class CollectionViewCell: UICollectionViewCell {
             let playerItem = AVPlayerItem(asset: asset)
             avPlayer?.replaceCurrentItem(with: playerItem)
             avPlayer?.play() // Play the new video
+            volumeMuteButton.isSelected = avPlayer?.isMuted ?? false
         }
-        volumeMuteButton.isSelected = avPlayer?.isMuted ?? false
     }
 }
-//"assets": [
-//      {
-//        "assetDetails": {
-//          "id": "0-0-1z5250002",
-//          "title": "Vyavastha",
-//          "description": "Hebah patel in Vyavastha",
-//          "duration": 45,
-//          "asset_type": 1,
-//          "thumbnails": [
-//            {
-//              "mainThumbnail": "1920x480-jhgkjhl"
-//            }
-//          ],
-//          "videoUri": {
-//            "avcUri": "https://zshorts-dev.zee5.com/zshorts/file1/index.m3u8",
-//            "hevcUri": "hevc.m3u8"
-//          },
-//          "parentAsset": {
-//            "id": "0-1-6z581703"
-//          },
-//          "page": {
-//            "cursor": "MTAxNTfxOTQ1tB"
-//          }
-//        }
-//      },
-//      ]
+
