@@ -386,7 +386,30 @@ class CollectionViewCell: UICollectionViewCell {
     }
 
     @objc private func shareButtonTapped() {
-        //function body to handle sharebutton tap
+        guard let parentViewController = findParentViewController() else {
+            return
+        }
+        guard let image = UIImage(systemName: "bell") , let url = URL(string: "https://www.google.com"), let whatsAppUrl = URL(string: "com.example.app.whatsapp") else {return }
+        let shareSheetVC = UIActivityViewController(
+            activityItems: [
+                image,
+                url,
+                whatsAppUrl
+            ],
+            applicationActivities: nil
+        )
+        parentViewController.present(shareSheetVC, animated: true)
+    }
+    
+    private func findParentViewController() -> UIViewController? {
+        var parentResponder: UIResponder? = self
+        while let responder = parentResponder {
+            if let viewController = responder as? UIViewController {
+                return viewController
+            }
+            parentResponder = responder.next
+        }
+        return nil
     }
     
     private var watchLabel: UILabel {
