@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     
     var currentlyPlayingCell: CollectionViewCell?
     
-    private var currentlyPlayingCellIndex: Int?
+    private var currentlyPlayingCellIndex: Int = 0
     
     var assets: [Asset] = [Asset]()
     
@@ -38,8 +38,11 @@ class ViewController: UIViewController {
     private var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+//        layout.sectionInset =
+//        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//        layout.
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.isPagingEnabled = true
@@ -56,29 +59,18 @@ class ViewController: UIViewController {
         setupCollectionView()
 
         APICaller.shared.fetchVideos { [weak self] items in
-            // Use the avcURI array in your view controller
             DispatchQueue.main.async {
-                // Here, you can update your UI or perform any other operations with avcURI
-                print("Fetched avcURI:", items)
-                
                 self?.assets = items
-                print(self?.assets)
                 self?.collectionView.reloadData()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                    print("videos array after 2 seconds:", self?.assets)
-                }
             }
         }
-        print("videos array - after api call - ",self.assets)
         collectionView.contentInsetAdjustmentBehavior = .never
+//        collectionView.scr
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
     }
-    
-    
     
     private func setupTopBar(){
         view.addSubview(topBar)
@@ -103,25 +95,22 @@ class ViewController: UIViewController {
     }
     
     private func setupCollectionView() {
-
-//        view.backgroundColor = .red
         
         collectionView.dataSource = self
         collectionView.delegate = self
-//        collectionView.backgroundColor = .red
         
         view.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: topBar.bottomAnchor),
+            collectionView.topAnchor.constraint(equalTo: topBar.bottomAnchor,constant: 5),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: bottomBar.topAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: bottomBar.topAnchor,constant: -5)
         ])
         
-        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.minimumLineSpacing = 0
-        }
+//        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+//            layout.minimumLineSpacing = 0
+//        }
     }
 }
 
@@ -132,17 +121,33 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
+        cell.configure(with: assets[indexPath.item])
         
-        if indexPath.row != currentlyPlayingCellIndex {
+        if indexPath.item != currentlyPlayingCellIndex {
             cell.stopVideoPlayback()
+        } else {
+            cell.startVideoPlayback()
         }
-        print("from cellforitemat func-",indexPath.row)
-        cell.configure(with: assets[indexPath.row])
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if let videoCell = cell as? CollectionViewCell {
+            currentlyPlayingCellIndex = indexPath.item
+            print("from will display cell func-",indexPath.item)
+            videoCell.startVideoPlayback()
+        }
+        
+        // Stop video playback for the cell below the currently displayed cell
+        let nextIndexPath = IndexPath(item: indexPath.item + 1, section: .zero)
+        if let nextCell = collectionView.cellForItem(at: nextIndexPath) as? CollectionViewCell {
+            nextCell.stopVideoPlayback()
+        }
+    }
+    
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let videoCell = cell as? CollectionViewCell {
-            videoCell.avPlayer?.pause()
+            videoCell.stopVideoPlayback() 
         }
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -151,9 +156,35 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
         return CGSize(width: itemWidth, height: itemHeight)
     }
     
-    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let videoCell = cell as? CollectionViewCell {
-            videoCell.avPlayer?.play()
+    func stopVideoPlaybackForNextCell(at indexPath: IndexPath) {
+        let nextIndexPath = IndexPath(item: indexPath.item + 1, section: .zero)
+        print("inside the stopplayback func called by",indexPath.row)
+        // Check if the nextIndexPath is within the bounds of the assets array
+        if let nextCell = collectionView.cellForItem(at: nextIndexPath) as? CollectionViewCell {
+            // Check if the nextCell is currently visible on the screen
+            print("before the visible item contains-",nextIndexPath.row)
+
+            if collectionView.indexPathsForVisibleItems.contains(nextIndexPath) {
+                print("stopping video playback at index- ", nextIndexPath)
+                nextCell.stopVideoPlayback()
+            }
         }
+        
     }
+    
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+//        return 3
+//    }
+}
+
+
+extension ViewController: UIScrollViewDelegate{
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+            let cellHeight = collectionView.bounds.height
+            let offset = targetContentOffset.pointee.y
+            let currentIndex = round(offset / cellHeight)
+            let newIndex = min(max(0, currentIndex), CGFloat(assets.count - 1))
+            let adjustedOffset = newIndex * cellHeight
+            targetContentOffset.pointee.y = adjustedOffset
+        }
 }

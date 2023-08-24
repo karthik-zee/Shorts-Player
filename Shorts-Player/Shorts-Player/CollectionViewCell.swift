@@ -21,7 +21,7 @@ class CollectionViewCell: UICollectionViewCell {
     static let identifier = "CollectionViewCell"
     
     private var progressIndicatorWidthConstraint: NSLayoutConstraint?
-    var avPlayer: AVPlayer?
+    private var avPlayer: AVPlayer?
     private var avPlayerLayer: AVPlayerLayer?
     
     public var videoURL:String = "https://zshorts-dev.zee5.com/zshorts/file2/index.m3u8"
@@ -113,8 +113,11 @@ class CollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        avPlayer?.pause()
+        playButtonOverlay.isHidden = true
         avPlayer?.seek(to: .zero)
-        
+        stopVideoPlayback()
+        print("inside prepare for resuse func-")
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -129,6 +132,11 @@ class CollectionViewCell: UICollectionViewCell {
     
     func stopVideoPlayback() {
         avPlayer?.pause()
+    }
+    
+    func startVideoPlayback() {
+        playButtonOverlay.isHidden = true
+        avPlayer?.play()
     }
     
     private func togglePlayButtonOverlay() {
@@ -233,7 +241,7 @@ class CollectionViewCell: UICollectionViewCell {
             titleLabel, dotLabel1, genreLabel, dotLabel2, ratingLabel
         ])
         horizontalStackView.axis = .horizontal
-        horizontalStackView.alignment = .leading 
+        horizontalStackView.alignment = .leading
         horizontalStackView.distribution = .equalCentering
         horizontalStackView.spacing = 0 // No spacing between items
         
@@ -409,6 +417,7 @@ class CollectionViewCell: UICollectionViewCell {
         genreLabel.text = "Action"
         ratingLabel.text = "7.0"
         videoURL = model.assetDetails.videoUri.avcUri
+        playButtonOverlay.isHidden = true
         
         if let avAssetURL = URL(string: videoURL) {
             let asset = AVURLAsset(url: avAssetURL)

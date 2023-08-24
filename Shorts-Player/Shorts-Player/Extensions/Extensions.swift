@@ -20,3 +20,17 @@ extension UIFont {
         }
     }
 }
+
+//extension UICollectionView {
+//    func isCellAtIndexPathFullyVisible(_ indexPath: IndexPath) -> Bool {
+//        let cellFrame = rectForRow(at: indexPath)
+//        return bounds.contains(cellFrame)
+//    }
+//    
+//    func indexPathsForFullyVisibleRows() -> [IndexPath] {
+//        let visibleIndexPaths = indexPathsForVisibleRows ?? []
+//        return visibleIndexPaths.filter { indexPath in
+//            return isCellAtIndexPathFullyVisible(indexPath)
+//        }
+//    }
+//}
