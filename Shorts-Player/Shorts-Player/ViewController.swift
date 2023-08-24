@@ -139,15 +139,15 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
         }
         
         // Stop video playback for the cell below the currently displayed cell
-        let nextIndexPath = IndexPath(item: indexPath.item + 1, section: .zero)
-        if let nextCell = collectionView.cellForItem(at: nextIndexPath) as? CollectionViewCell {
-            nextCell.stopVideoPlayback()
-        }
+//        let nextIndexPath = IndexPath(item: indexPath.item + 1, section: .zero)
+//        if let nextCell = collectionView.cellForItem(at: nextIndexPath) as? CollectionViewCell {
+//            nextCell.stopVideoPlayback()
+//        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let videoCell = cell as? CollectionViewCell {
-            videoCell.stopVideoPlayback() 
+            videoCell.stopVideoPlayback()
         }
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -171,10 +171,6 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
         }
         
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-//        return 3
-//    }
 }
 
 

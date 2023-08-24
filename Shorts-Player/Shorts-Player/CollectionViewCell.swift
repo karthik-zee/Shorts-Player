@@ -136,6 +136,8 @@ class CollectionViewCell: UICollectionViewCell {
     
     func startVideoPlayback() {
         playButtonOverlay.isHidden = true
+        // seek to zero if the cell has to be played from start again from will display method
+        avPlayer?.seek(to: .zero)
         avPlayer?.play()
     }
     
