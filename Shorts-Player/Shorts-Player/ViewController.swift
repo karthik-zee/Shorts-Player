@@ -40,9 +40,6 @@ class ViewController: UIViewController {
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
-//        layout.sectionInset =
-//        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-//        layout.
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.isPagingEnabled = true
@@ -65,7 +62,6 @@ class ViewController: UIViewController {
             }
         }
         collectionView.contentInsetAdjustmentBehavior = .never
-//        collectionView.scr
     }
     
     override func viewDidLayoutSubviews() {
@@ -107,10 +103,6 @@ class ViewController: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: bottomBar.topAnchor,constant: -5)
         ])
-        
-//        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-//            layout.minimumLineSpacing = 0
-//        }
     }
 }
 
@@ -138,11 +130,6 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
             videoCell.startVideoPlayback()
         }
         
-        // Stop video playback for the cell below the currently displayed cell
-//        let nextIndexPath = IndexPath(item: indexPath.item + 1, section: .zero)
-//        if let nextCell = collectionView.cellForItem(at: nextIndexPath) as? CollectionViewCell {
-//            nextCell.stopVideoPlayback()
-//        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

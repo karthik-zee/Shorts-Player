@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "addToPlaylist.png",
+      "filename" : "playlist.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "addToPlaylist@2x.png",
+      "filename" : "playlist@2x.svg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "addToPlaylist@3x.png",
+      "filename" : "playlist@3x.svg",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "onClickPlaylist.png",
+      "filename" : "onClickPlaylist.svg",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "onClickPlaylist@2x.png",
+      "filename" : "onClickPlaylist@2x.svg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "onClickPlaylist@3x.png",
+      "filename" : "onClickPlaylist@3x.svg",
       "idiom" : "universal",
       "scale" : "3x"
     }
