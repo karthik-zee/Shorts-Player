@@ -370,7 +370,7 @@ class CollectionViewCell: UICollectionViewCell {
         let chevronLeftButton: UIButton = {
             let button = UIButton()
             button.setImage(UIImage(named: chevronButton), for: .normal)
-            // button.addTarget(self, action: #selector(chevronButtonTapped), for: .touchUpInside)
+            button.addTarget(self, action: #selector(chevronButtonTapped), for: .touchUpInside)
             return button
         }()
         
@@ -418,6 +418,10 @@ class CollectionViewCell: UICollectionViewCell {
     @objc private func videoViewTapped() {
         togglePlayButtonOverlay()
         togglePlayPauseVideo()
+    }
+    
+    @objc private func chevronButtonTapped(){
+        UIControl().sendAction(#selector(NSXPCConnection.suspend), to: UIApplication.shared, for: nil)
     }
     
     public func configure(with model:Asset){
