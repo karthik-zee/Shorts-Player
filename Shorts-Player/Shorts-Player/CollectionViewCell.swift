@@ -280,7 +280,7 @@ class CollectionViewCell: UICollectionViewCell {
         contentView.addSubview(verticalStackView)
         verticalStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            verticalStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 665),
+            verticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
             verticalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
             verticalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -89),
             verticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15)
