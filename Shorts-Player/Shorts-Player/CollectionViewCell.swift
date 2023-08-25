@@ -26,34 +26,34 @@ class CollectionViewCell: UICollectionViewCell {
     
     public var videoURL:String = "https://zshorts-dev.zee5.com/zshorts/file2/index.m3u8"
     
-    let playButtonOverlay: UIImageView = {
+    lazy var playButtonOverlay: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "playButton"))
         imageView.contentMode = .scaleAspectFit
         imageView.isHidden = true
         return imageView
     }()
     
-    let progressIndicator: UIView = {
+    lazy var progressIndicator: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(red: 0.655, green: 0.522, blue: 1, alpha: 1)
         return view
     }()
     
-    let videoView: UIView = {
+    lazy var videoView: UIView = {
         let view = UIView()
         view.backgroundColor = .green
         var videoURL:String
         return view
     }()
     
-    let volumeMuteButton: UIButton = {
+    lazy var volumeMuteButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "volumeMute"), for: .selected)
         button.setImage(UIImage(named: "volumeIcon"), for: .normal)
         return button
     }()
     
-    let movieDescriptionLabel: UILabel = {
+    lazy var movieDescriptionLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
         label.textColor = .white
@@ -62,7 +62,7 @@ class CollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    let titleLabel: UILabel = {
+    lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .white
         label.font = UIFont.notoFont(size: 11, weight: .medium)
@@ -70,7 +70,7 @@ class CollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    let genreLabel: UILabel = {
+    lazy var genreLabel: UILabel = {
         let label = UILabel()
         label.textColor = .white
         label.font = UIFont.notoFont(size: 11, weight: .medium)
@@ -78,7 +78,7 @@ class CollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    let ratingLabel: UILabel = {
+    lazy var ratingLabel: UILabel = {
         let label = UILabel()
         label.textColor = .white
         label.font = UIFont.notoFont(size: 11, weight: .medium)
@@ -86,14 +86,14 @@ class CollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    let dotLabel1: UILabel = {
+    lazy var dotLabel1: UILabel = {
         let label = UILabel()
         label.textColor = .white
         label.text = "•"
         return label
     }()
     
-    let dotLabel2: UILabel = {
+    lazy var dotLabel2: UILabel = {
         let label = UILabel()
         label.textColor = .white
         label.text = "•"
