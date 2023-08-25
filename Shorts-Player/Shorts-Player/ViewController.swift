@@ -18,6 +18,7 @@ class ViewController: UIViewController {
     var currentlyPlayingCell: CollectionViewCell?
     
     private var currentlyPlayingCellIndex: Int = 0
+    private var urlString = "https://zshorts-dev.zee5.com/v1/zShorts"
     
     var assets: [Asset] = [Asset]()
     
@@ -55,7 +56,7 @@ class ViewController: UIViewController {
         setupBottomBar()
         setupCollectionView()
 
-        APICaller.shared.fetchVideos { [weak self] items in
+        APICaller.shared.fetchVideos(with: urlString) { [weak self] items in
             DispatchQueue.main.async {
                 self?.assets = items
                 self?.collectionView.reloadData()

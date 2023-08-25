@@ -10,9 +10,8 @@ import Foundation
 class APICaller {
     static let shared = APICaller()
     
-    func fetchVideos(completion: @escaping ([Asset]) -> Void) {
-        let urlString = "https://zshorts-dev.zee5.com/v1/zShorts"
-        
+    func fetchVideos(with urlString: String ,completion: @escaping ([Asset]) -> Void) {
+      
         if let url = URL(string: urlString) {
             URLSession.shared.dataTask(with: url) { data, response, error in
                 guard let data = data, error == nil else {
