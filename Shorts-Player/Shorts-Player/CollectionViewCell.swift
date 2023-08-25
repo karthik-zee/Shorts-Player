@@ -191,14 +191,16 @@ class CollectionViewCell: UICollectionViewCell {
             }
             let currentTime = time.seconds
             let progress = currentTime / duration
-            self?.updateProgressIndicator(progress: progress)
+            DispatchQueue.main.async {
+                self?.updateProgressIndicator(progress: progress)
+            }
         }
     }
     
     private func updateProgressIndicator(progress: Double) {
         let maxWidth = contentView.bounds.width
         let newWidth = maxWidth * CGFloat(progress)
-        progressIndicatorWidthConstraint?.constant = newWidth
+        self.progressIndicatorWidthConstraint?.constant = newWidth
     }
     
     private func setupVideoView(){
