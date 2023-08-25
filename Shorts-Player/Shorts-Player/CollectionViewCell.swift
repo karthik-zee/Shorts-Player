@@ -20,12 +20,11 @@ class CollectionViewCell: UICollectionViewCell {
     }
     static let identifier = "CollectionViewCell"
     
+    public var videoURL:String = "https://zshorts-dev.zee5.com/zshorts/file2/index.m3u8"
+    
     private var progressIndicatorWidthConstraint: NSLayoutConstraint?
     private var avPlayer: AVPlayer?
     private var avPlayerLayer: AVPlayerLayer?
-    
-    public var videoURL:String = "https://zshorts-dev.zee5.com/zshorts/file2/index.m3u8"
-    
     private let volumeMute = "volumeMute"
     private let volumeIcon = "volumeIcon"
     private let playButton = "playButton"
@@ -36,6 +35,78 @@ class CollectionViewCell: UICollectionViewCell {
     private let onClickPlaylist = "onClickPlaylist"
     private let share = "share"
     private let onClickShare = "onClickShare"
+    
+    private var watchStackView: UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [watchButton, watchLabel])
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.spacing = 6
+        return stackView
+    }
+    
+    private var myListStackView: UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [myListButton, myListLabel])
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.spacing = 6
+        return stackView
+    }
+    
+    private var shareStackView: UIStackView {
+        let stackView = UIStackView(arrangedSubviews: [shareButton, shareLabel])
+        stackView.axis = .vertical
+        stackView.alignment = .center
+        stackView.spacing = 6
+        return stackView
+    }
+    
+    private var watchButton: UIButton {
+        let button = UIButton()
+        button.setImage(UIImage(named: watch), for: .normal)
+        button.setImage(UIImage(named: onClickWatch), for: .highlighted)
+        button.addTarget(self, action: #selector(watchButtonTapped), for: .touchUpInside)
+        return button
+    }
+    
+    private var myListButton: UIButton {
+        let button = UIButton()
+        button.setImage(UIImage(named: playlist), for: .normal)
+        button.setImage(UIImage(named: onClickPlaylist), for: .highlighted)
+        button.addTarget(self, action: #selector(myListButtonTapped), for: .allTouchEvents)
+        return button
+    }
+    
+    private var shareButton: UIButton {
+        let button = UIButton()
+        button.setImage(UIImage(named: share), for: .normal)
+        button.setImage(UIImage(named: onClickShare), for: .highlighted)
+        button.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
+        return button
+    }
+    
+    private var watchLabel: UILabel {
+        let label = UILabel()
+        label.text = "Watch"
+        label.textColor = .white
+        label.textAlignment = .center
+        return label
+    }
+    
+    private var myListLabel: UILabel {
+        let label = UILabel()
+        label.text = "My List"
+        label.textColor = .white
+        label.textAlignment = .center
+        return label
+    }
+    
+    private var shareLabel: UILabel {
+        let label = UILabel()
+        label.text = "Share"
+        label.textColor = .white
+        label.textAlignment = .center
+        return label
+    }
     
     lazy var playButtonOverlay: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: playButton))
@@ -241,11 +312,6 @@ class CollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    @objc private func videoViewTapped() {
-        togglePlayButtonOverlay()
-        togglePlayPauseVideo()
-    }
-    
     private func setupSubviews() {
         contentView.addSubview(movieDescriptionLabel)
     }
@@ -300,15 +366,6 @@ class CollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    @objc private func unmuteButtonTapped() {
-        // Toggle the isSelected state of the button
-        volumeMuteButton.isSelected = !volumeMuteButton.isSelected
-        
-        avPlayer?.isMuted = volumeMuteButton.isSelected
-        
-    }
-    
-    
     private func setupChevronButton(){
         let chevronLeftButton: UIButton = {
             let button = UIButton()
@@ -341,54 +398,6 @@ class CollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    private var watchStackView: UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [watchButton, watchLabel])
-        stackView.axis = .vertical
-        stackView.alignment = .center
-        stackView.spacing = 6
-        return stackView
-    }
-    
-    private var myListStackView: UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [myListButton, myListLabel])
-        stackView.axis = .vertical
-        stackView.alignment = .center
-        stackView.spacing = 6
-        return stackView
-    }
-    
-    private var shareStackView: UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [shareButton, shareLabel])
-        stackView.axis = .vertical
-        stackView.alignment = .center
-        stackView.spacing = 6
-        return stackView
-    }
-    
-    private var watchButton: UIButton {
-        let button = UIButton()
-        button.setImage(UIImage(named: watch), for: .normal)
-        button.setImage(UIImage(named: onClickWatch), for: .highlighted)
-        button.addTarget(self, action: #selector(watchButtonTapped), for: .touchUpInside)
-        return button
-    }
-    
-    private var myListButton: UIButton {
-        let button = UIButton()
-        button.setImage(UIImage(named: playlist), for: .normal)
-        button.setImage(UIImage(named: onClickPlaylist), for: .highlighted)
-        button.addTarget(self, action: #selector(myListButtonTapped), for: .allTouchEvents)
-        return button
-    }
-    
-    private var shareButton: UIButton {
-        let button = UIButton()
-        button.setImage(UIImage(named: share), for: .normal)
-        button.setImage(UIImage(named: onClickShare), for: .highlighted)
-        button.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
-        return button
-    }
-    
     @objc private func watchButtonTapped() {
         //function to handle watch button
     }
@@ -401,28 +410,14 @@ class CollectionViewCell: UICollectionViewCell {
         //function body to handle sharebutton tap
     }
     
-    private var watchLabel: UILabel {
-        let label = UILabel()
-        label.text = "Watch"
-        label.textColor = .white
-        label.textAlignment = .center
-        return label
+    @objc private func unmuteButtonTapped() {
+        volumeMuteButton.isSelected = !volumeMuteButton.isSelected
+        avPlayer?.isMuted = volumeMuteButton.isSelected
     }
     
-    private var myListLabel: UILabel {
-        let label = UILabel()
-        label.text = "My List"
-        label.textColor = .white
-        label.textAlignment = .center
-        return label
-    }
-    
-    private var shareLabel: UILabel {
-        let label = UILabel()
-        label.text = "Share"
-        label.textColor = .white
-        label.textAlignment = .center
-        return label
+    @objc private func videoViewTapped() {
+        togglePlayButtonOverlay()
+        togglePlayPauseVideo()
     }
     
     public func configure(with model:Asset){
