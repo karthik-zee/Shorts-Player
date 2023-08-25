@@ -293,7 +293,7 @@ class CollectionViewCell: UICollectionViewCell {
         contentView.addSubview(volumeMuteButton)
         volumeMuteButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            volumeMuteButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 329),
+            volumeMuteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24),
             volumeMuteButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
             volumeMuteButton.widthAnchor.constraint(equalToConstant: 40), // Set width
             volumeMuteButton.heightAnchor.constraint(equalToConstant: 40) // Set height
