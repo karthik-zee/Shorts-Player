@@ -26,8 +26,19 @@ class CollectionViewCell: UICollectionViewCell {
     
     public var videoURL:String = "https://zshorts-dev.zee5.com/zshorts/file2/index.m3u8"
     
+    private let volumeMute = "volumeMute"
+    private let volumeIcon = "volumeIcon"
+    private let playButton = "playButton"
+    private let chevronButton = "chevronButton"
+    private let watch = "watch"
+    private let onClickWatch = "onClickWatch"
+    private let playlist = "playlist"
+    private let onClickPlaylist = "onClickPlaylist"
+    private let share = "share"
+    private let onClickShare = "onClickShare"
+    
     lazy var playButtonOverlay: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "playButton"))
+        let imageView = UIImageView(image: UIImage(named: playButton))
         imageView.contentMode = .scaleAspectFit
         imageView.isHidden = true
         return imageView
@@ -48,8 +59,8 @@ class CollectionViewCell: UICollectionViewCell {
     
     lazy var volumeMuteButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "volumeMute"), for: .selected)
-        button.setImage(UIImage(named: "volumeIcon"), for: .normal)
+        button.setImage(UIImage(named: volumeMute), for: .selected)
+        button.setImage(UIImage(named: volumeIcon), for: .normal)
         return button
     }()
     
@@ -300,7 +311,7 @@ class CollectionViewCell: UICollectionViewCell {
     private func setupChevronButton(){
         let chevronLeftButton: UIButton = {
             let button = UIButton()
-            button.setImage(UIImage(named: "chevronButton"), for: .normal)
+            button.setImage(UIImage(named: chevronButton), for: .normal)
            // button.addTarget(self, action: #selector(chevronButtonTapped), for: .touchUpInside)
             return button
         }()
@@ -355,24 +366,24 @@ class CollectionViewCell: UICollectionViewCell {
     
     private var watchButton: UIButton {
         let button = UIButton()
-        button.setImage(UIImage(named: "watch"), for: .normal)
-        button.setImage(UIImage(named: "onClickWatch"), for: .highlighted)
+        button.setImage(UIImage(named: watch), for: .normal)
+        button.setImage(UIImage(named: onClickWatch), for: .highlighted)
         button.addTarget(self, action: #selector(watchButtonTapped), for: .touchUpInside)
         return button
     }
 
     private var myListButton: UIButton {
         let button = UIButton()
-        button.setImage(UIImage(named: "playlist"), for: .normal)
-        button.setImage(UIImage(named: "onClickPlaylist"), for: .highlighted)
+        button.setImage(UIImage(named: playlist), for: .normal)
+        button.setImage(UIImage(named: onClickPlaylist), for: .highlighted)
         button.addTarget(self, action: #selector(myListButtonTapped), for: .allTouchEvents)
         return button
     }
 
     private var shareButton: UIButton {
         let button = UIButton()
-        button.setImage(UIImage(named: "share"), for: .normal)
-        button.setImage(UIImage(named: "onClickShare"), for: .highlighted)
+        button.setImage(UIImage(named: share), for: .normal)
+        button.setImage(UIImage(named: onClickShare), for: .highlighted)
         button.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
         return button
     }
