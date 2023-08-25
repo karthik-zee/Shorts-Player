@@ -336,8 +336,8 @@ class CollectionViewCell: UICollectionViewCell {
         contentView.addSubview(iconStackView)
         iconStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            iconStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 318),
-            iconStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 522)
+            iconStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24),
+            iconStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -28)
         ])
     }
     
