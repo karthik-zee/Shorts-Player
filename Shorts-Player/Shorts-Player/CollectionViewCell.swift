@@ -133,7 +133,7 @@ class CollectionViewCell: UICollectionViewCell {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
-
+        
         // Check if the tap is outside of existing buttons and stack views
         if touches.first?.view == contentView {
             togglePlayButtonOverlay()
@@ -155,7 +155,7 @@ class CollectionViewCell: UICollectionViewCell {
     private func togglePlayButtonOverlay() {
         playButtonOverlay.isHidden.toggle()
     }
-
+    
     private func togglePlayPauseVideo() {
         if let avPlayer = avPlayer {
             if avPlayer.rate == 0 { // Video is paused
@@ -172,27 +172,27 @@ class CollectionViewCell: UICollectionViewCell {
     
     private func setupProgressIndicator(){
         contentView.addSubview(progressIndicator)
-            
-            progressIndicator.translatesAutoresizingMaskIntoConstraints = false
-            
-            NSLayoutConstraint.activate([
-                progressIndicator.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-                progressIndicator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-                progressIndicator.heightAnchor.constraint(equalToConstant: 5)
-            ])
-            
-            progressIndicatorWidthConstraint = progressIndicator.widthAnchor.constraint(equalToConstant: 0)
-            progressIndicatorWidthConstraint?.isActive = true
-            
-            // Add observer for AVPlayer's currentTime
-            avPlayer?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.1, preferredTimescale: 600), queue: .main) { [weak self] time in
-                guard let duration = self?.avPlayer?.currentItem?.duration.seconds, duration > 0 else {
-                    return
-                }
-                let currentTime = time.seconds
-                let progress = currentTime / duration
-                self?.updateProgressIndicator(progress: progress)
+        
+        progressIndicator.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            progressIndicator.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            progressIndicator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            progressIndicator.heightAnchor.constraint(equalToConstant: 5)
+        ])
+        
+        progressIndicatorWidthConstraint = progressIndicator.widthAnchor.constraint(equalToConstant: 0)
+        progressIndicatorWidthConstraint?.isActive = true
+        
+        // Add observer for AVPlayer's currentTime
+        avPlayer?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.1, preferredTimescale: 600), queue: .main) { [weak self] time in
+            guard let duration = self?.avPlayer?.currentItem?.duration.seconds, duration > 0 else {
+                return
             }
+            let currentTime = time.seconds
+            let progress = currentTime / duration
+            self?.updateProgressIndicator(progress: progress)
+        }
     }
     
     private func updateProgressIndicator(progress: Double) {
@@ -206,8 +206,8 @@ class CollectionViewCell: UICollectionViewCell {
         contentView.addSubview(playButtonOverlay)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(videoViewTapped))
-           videoView.addGestureRecognizer(tapGesture)
-
+        videoView.addGestureRecognizer(tapGesture)
+        
         videoURL = "https://zshorts-dev.zee5.com/zshorts/file2/index.m3u8"
         if let avAssetURL = URL(string: videoURL) {
             let asset = AVURLAsset(url: avAssetURL)
@@ -266,8 +266,8 @@ class CollectionViewCell: UICollectionViewCell {
             horizontalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -89),
             horizontalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -104)
         ])
-
-            
+        
+        
         let verticalStackView = UIStackView(arrangedSubviews: [
             movieDescriptionLabel, horizontalStackView
         ])
@@ -285,7 +285,7 @@ class CollectionViewCell: UICollectionViewCell {
             verticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15)
         ])
     }
-
+    
     private func setupVolumeMuteButton() {
         volumeMuteButton.isSelected = avPlayer?.isMuted ?? false
         volumeMuteButton.addTarget(self, action: #selector(unmuteButtonTapped), for: .touchUpInside)
@@ -298,21 +298,21 @@ class CollectionViewCell: UICollectionViewCell {
             volumeMuteButton.heightAnchor.constraint(equalToConstant: 40) // Set height
         ])
     }
-
+    
     @objc private func unmuteButtonTapped() {
         // Toggle the isSelected state of the button
         volumeMuteButton.isSelected = !volumeMuteButton.isSelected
         
         avPlayer?.isMuted = volumeMuteButton.isSelected
-
+        
     }
-
-
+    
+    
     private func setupChevronButton(){
         let chevronLeftButton: UIButton = {
             let button = UIButton()
             button.setImage(UIImage(named: chevronButton), for: .normal)
-           // button.addTarget(self, action: #selector(chevronButtonTapped), for: .touchUpInside)
+            // button.addTarget(self, action: #selector(chevronButtonTapped), for: .touchUpInside)
             return button
         }()
         
@@ -371,7 +371,7 @@ class CollectionViewCell: UICollectionViewCell {
         button.addTarget(self, action: #selector(watchButtonTapped), for: .touchUpInside)
         return button
     }
-
+    
     private var myListButton: UIButton {
         let button = UIButton()
         button.setImage(UIImage(named: playlist), for: .normal)
@@ -379,7 +379,7 @@ class CollectionViewCell: UICollectionViewCell {
         button.addTarget(self, action: #selector(myListButtonTapped), for: .allTouchEvents)
         return button
     }
-
+    
     private var shareButton: UIButton {
         let button = UIButton()
         button.setImage(UIImage(named: share), for: .normal)
@@ -387,15 +387,15 @@ class CollectionViewCell: UICollectionViewCell {
         button.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
         return button
     }
-
+    
     @objc private func watchButtonTapped() {
         //function to handle watch button
     }
-
+    
     @objc private func myListButtonTapped() {
         //function body to handle playlistbutton tap
     }
-
+    
     @objc private func shareButtonTapped() {
         //function body to handle sharebutton tap
     }
