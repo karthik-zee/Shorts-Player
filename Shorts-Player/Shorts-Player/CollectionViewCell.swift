@@ -217,8 +217,7 @@ class CollectionViewCell: UICollectionViewCell {
             avPlayer = AVPlayer(playerItem: playerItem)
         }
         avPlayerLayer = AVPlayerLayer(player: avPlayer)
-        let playerLayerFrame = CGRect(x: 0, y: 0, width: contentView.bounds.width, height: contentView.bounds.height)
-        avPlayerLayer?.frame = playerLayerFrame
+        avPlayerLayer?.frame = contentView.bounds
         avPlayerLayer?.videoGravity = .resizeAspectFill
         avPlayerLayer?.backgroundColor = .init(red: 1, green: 0, blue: 0, alpha: 0.6)
         avPlayer?.play()
