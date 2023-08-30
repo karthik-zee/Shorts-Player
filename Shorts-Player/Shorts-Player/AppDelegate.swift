@@ -58,6 +58,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
+        let content = container.managedObjectModel.entities.first as? MovieEntity
+        content?.isAddedToWatchlist = true
         return container
     }()
 

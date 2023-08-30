@@ -1,13 +1,13 @@
 //
-//  Shorts_PlayerUITestsLaunchTests.swift
-//  Shorts-PlayerUITests
+//  ShortsPlayerUITestsLaunchTests.swift
+//  ShortsPlayerUITests
 //
-//  Created by Karthik Reddy on 16/08/23.
+//  Created by Karthik Reddy on 28/08/23.
 //
 
 import XCTest
 
-final class Shorts_PlayerUITestsLaunchTests: XCTestCase {
+final class ShortsPlayerUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

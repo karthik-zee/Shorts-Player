@@ -128,6 +128,7 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
         if let videoCell = cell as? CollectionViewCell {
             currentlyPlayingCellIndex = indexPath.item
             print("from will display cell func-",indexPath.item)
+            print(assets[indexPath.item].assetDetails.id)
             videoCell.startVideoPlayback()
         }
         
