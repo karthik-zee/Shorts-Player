@@ -39,37 +39,37 @@ class CollectionViewCell: UICollectionViewCell {
     private let share = "share"
     private let onClickShare = "onClickShare"
     
-    private var watchStackView: UIStackView {
+    lazy var watchStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [watchButton, watchLabel])
         stackView.axis = .vertical
         stackView.alignment = .center
         stackView.spacing = 6
         return stackView
-    }
+    }()
     
-    private var myListStackView: UIStackView {
+    lazy var myListStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [myListButton, myListLabel])
         stackView.axis = .vertical
         stackView.alignment = .center
         stackView.spacing = 6
         return stackView
-    }
+    }()
     
-    private var shareStackView: UIStackView {
+    lazy var shareStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [shareButton, shareLabel])
         stackView.axis = .vertical
         stackView.alignment = .center
         stackView.spacing = 6
         return stackView
-    }
+    }()
     
-    private var watchButton: UIButton {
+    lazy var watchButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: watch), for: .normal)
         button.setImage(UIImage(named: onClickWatch), for: .highlighted)
         button.addTarget(self, action: #selector(watchButtonTapped), for: .touchUpInside)
         return button
-    }
+    }()
     
     lazy var myListButton: UIButton = {
         let button = UIButton()
@@ -78,37 +78,37 @@ class CollectionViewCell: UICollectionViewCell {
         return button
     }()
     
-    private var shareButton: UIButton {
+    lazy var shareButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: share), for: .normal)
         button.setImage(UIImage(named: onClickShare), for: .highlighted)
         button.addTarget(self, action: #selector(shareButtonTapped), for: .touchUpInside)
         return button
-    }
+    }()
     
-    private var watchLabel: UILabel {
+    lazy var watchLabel: UILabel = {
         let label = UILabel()
         label.text = "Watch"
         label.textColor = .white
         label.textAlignment = .center
         return label
-    }
+    }()
     
-    private var myListLabel: UILabel {
+    lazy var myListLabel: UILabel = {
         let label = UILabel()
         label.text = "My List"
         label.textColor = .white
         label.textAlignment = .center
         return label
-    }
+    }()
     
-    private var shareLabel: UILabel {
+    lazy var shareLabel: UILabel = {
         let label = UILabel()
         label.text = "Share"
         label.textColor = .white
         label.textAlignment = .center
         return label
-    }
+    }()
     
     lazy var playButtonOverlay: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: playButton))
@@ -434,32 +434,22 @@ class CollectionViewCell: UICollectionViewCell {
                 print("after Configure updated the isAddedToWatchlist in if block-",isAddedToWatchlistAfterConfigure)
                 // Print details of the updated movie
                 print("Updated Movie - ID: \(movie.id ?? ""), isAddedToWatchlist: \(movie.isAddedToWatchlist)")
-                
-                
                 // Update the UI to reflect the change (reload collection view or update specific cell)
             } else {
                 print("movie not present in core data")
-                //print("state of button inside else block - ",myListButton.isSelected.description)
                 // Create a new movie entity and set isAddedToWatchlist to true
                 let movie = MovieEntity(context: managedContext)
                 movie.id = movieIdForCoredata
                 movie.isAddedToWatchlist = true
                 isAddedToWatchlistAfterConfigure = movie.isAddedToWatchlist
-                //print("isaddedtoWatchlistforConfigure is-",isAddedToWatchlistAfterConfigure)
-                
                 try managedContext.save()
-                
                 DispatchQueue.main.async {
                     if(movie.isAddedToWatchlist){
                         self.myListButton.setImage(UIImage(named: "addedToWatchlist"), for: .normal)
                     }
                 }
-                
-                
                 // Print details of the newly added movie
                 print("Newly Added Movie - ID: \(movie.id ?? ""), isAddedToWatchlist: \(movie.isAddedToWatchlist)")
-                
-                // Update the UI to reflect the change (reload collection view or update specific cell)
             }
             
             let allMoviesFetchRequest: NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
