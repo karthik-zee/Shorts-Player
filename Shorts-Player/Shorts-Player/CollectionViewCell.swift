@@ -74,7 +74,6 @@ class CollectionViewCell: UICollectionViewCell {
     lazy var myListButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: playlist), for: .normal)
-        //        button.setImage(UIImage(named: "addedToWatchlist"), for: .selected)
         button.addTarget(self, action: #selector(myListButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -343,7 +342,6 @@ class CollectionViewCell: UICollectionViewCell {
             movieDescriptionLabel, horizontalStackView
         ])
         verticalStackView.axis = .vertical
-        //verticalStackView.alignment = .fill
         verticalStackView.spacing = 0 // Adjust the spacing between cells
         verticalStackView.distribution = .fillEqually
         
@@ -353,7 +351,6 @@ class CollectionViewCell: UICollectionViewCell {
             verticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
             verticalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
             verticalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -89),
-            //verticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15)
         ])
     }
     
@@ -465,13 +462,6 @@ class CollectionViewCell: UICollectionViewCell {
                 // Update the UI to reflect the change (reload collection view or update specific cell)
             }
             
-//            DispatchQueue.main.async {
-//                if(isAddedToWatchlistAfterConfigure) {
-//                    print("inside dispatch queue inside the ontouchup addedtoWatchlist func")
-//                    self.myListButton.setImage(UIImage(named: "addedToWatchlist"), for: .selected)
-//                }
-//            }
-            
             let allMoviesFetchRequest: NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
             let allMovies = try managedContext.fetch(allMoviesFetchRequest)
             
@@ -532,12 +522,8 @@ class CollectionViewCell: UICollectionViewCell {
                 print("isaddedtoWatchlist inside configure func -",isAddedToWatchlist)
                 DispatchQueue.main.async {
                     if isAddedToWatchlist {
-                        //self.myListLabel.
                         print("inside configure - if block setting image to button")
                         self.myListButton.setImage(UIImage(named: "addedToWatchlist"), for: .normal)
-                        //self.myListButton.setImage(UIImage(named: "addedToWatchlist"), for: [.selected, .highlighted])
-                        //print(self.myListButton.isEnabled)
-                        //print(self.myListButton.isHidden)
                     } else {
                         print("inside configure - else block setting unselected image")
                         self.myListButton.setImage(UIImage(named: "playlist"), for: .normal)
