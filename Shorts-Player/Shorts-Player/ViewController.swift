@@ -182,5 +182,4 @@ extension ViewController: muteUnmuteDelegate {
     func didToggleMuteState(for cell: CollectionViewCell) {
         isGlobalMute.toggle()
     }
-    
 }

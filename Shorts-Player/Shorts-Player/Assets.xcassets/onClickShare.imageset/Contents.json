@@ -6,12 +6,10 @@
       "scale" : "1x"
     },
     {
-      "filename" : "onClickShare@2x.svg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "onClickShare@3x.svg",
       "idiom" : "universal",
       "scale" : "3x"
     }

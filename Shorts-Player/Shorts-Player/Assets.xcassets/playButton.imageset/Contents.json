@@ -6,12 +6,10 @@
       "scale" : "1x"
     },
     {
-      "filename" : "playButton@2x.svg",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "playButton@3x.svg",
       "idiom" : "universal",
       "scale" : "3x"
     }
