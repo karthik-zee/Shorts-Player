@@ -9,7 +9,12 @@ import UIKit
 import AVFoundation
 import CoreData
 
+protocol muteUnmuteDelegate:AnyObject {
+    func didToggleMuteState(for cell: CollectionViewCell)
+}
+
 class CollectionViewCell: UICollectionViewCell {
+    weak var delegate: muteUnmuteDelegate?
     var isPlaying: Bool = false {
         didSet {
             if isPlaying {
@@ -200,7 +205,6 @@ class CollectionViewCell: UICollectionViewCell {
         avPlayer?.pause()
         playButtonOverlay.isHidden = true
         avPlayer?.seek(to: .zero)
-        stopVideoPlayback()
         print("inside prepare for resuse func-")
         
     }
@@ -215,11 +219,26 @@ class CollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func stopVideoPlayback() {
+    func stopVideoPlayback(with isMuted: Bool) {
+        if isMuted {
+            avPlayer?.isMuted = true
+            volumeMuteButton.setImage(UIImage(named: "volumeMute"), for: .normal)
+        } else {
+            volumeMuteButton.setImage(UIImage(named: "volumeIcon"), for: .normal)
+        }
         avPlayer?.pause()
     }
     
-    func startVideoPlayback() {
+    func startVideoPlayback(with isMuted: Bool) {
+        DispatchQueue.main.async {
+            if isMuted {
+                self.avPlayer?.isMuted = true
+                self.volumeMuteButton.setImage(UIImage(named: "volumeMute"), for: .normal)
+            } else {
+                self.avPlayer?.isMuted = false
+                self.volumeMuteButton.setImage(UIImage(named: "volumeIcon"), for: .normal)
+            }
+        }
         playButtonOverlay.isHidden = true
         // seek to zero if the cell has to be played from start again from will display method
         avPlayer?.seek(to: .zero)
@@ -415,7 +434,6 @@ class CollectionViewCell: UICollectionViewCell {
         do {
             let movies = try managedContext.fetch(fetchRequest)
             if let movie = movies.first {
-                //print("toggle state of mylist button inside if block - ",myListButton.isSelected.description)
                 print("movie present in core data and is being toggled")
                 // Toggle the value
                 movie.isAddedToWatchlist.toggle()
@@ -470,8 +488,20 @@ class CollectionViewCell: UICollectionViewCell {
     }
     
     @objc private func unmuteButtonTapped() {
-        volumeMuteButton.isSelected = !volumeMuteButton.isSelected
-        avPlayer?.isMuted = volumeMuteButton.isSelected
+        if volumeMuteButton.currentImage == UIImage(named: "volumeIcon") {
+            avPlayer?.isMuted = true
+            DispatchQueue.main.async {
+                self.volumeMuteButton.setImage(UIImage(named: "volumeMute"), for: .normal)
+            }
+            delegate?.didToggleMuteState(for: self)
+        }
+        else{
+            avPlayer?.isMuted = false
+            DispatchQueue.main.async {
+                self.volumeMuteButton.setImage(UIImage(named: "volumeIcon"), for: .normal)
+            }
+            delegate?.didToggleMuteState(for: self)
+        }
     }
     
     @objc private func videoViewTapped() {
@@ -497,7 +527,11 @@ class CollectionViewCell: UICollectionViewCell {
             let playerItem = AVPlayerItem(asset: asset)
             avPlayer?.replaceCurrentItem(with: playerItem)
             avPlayer?.play() // Play the new video
-            volumeMuteButton.isSelected = avPlayer?.isMuted ?? false
+            if avPlayer?.isMuted == true {
+                volumeMuteButton.setImage(UIImage(named: "volumeMute"), for: .normal)
+            } else {
+                volumeMuteButton.setImage(UIImage(named: "volumeIcon"), for: .normal)
+            }
         }
         
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }

@@ -14,7 +14,7 @@ struct VideoModel {
 let customColor = UIColor(red: 15/255.0, green: 6/255.0, blue: 23/255.0, alpha: 1.0)
 
 class ViewController: UIViewController {
-    
+    private var isGlobalMute: Bool = false
     var currentlyPlayingCell: CollectionViewCell?
     
     private var currentlyPlayingCellIndex: Int = 0
@@ -63,6 +63,8 @@ class ViewController: UIViewController {
             }
         }
         collectionView.contentInsetAdjustmentBehavior = .never
+        
+        print("the value of isGlobalMute is-",isGlobalMute)
     }
     
     override func viewDidLayoutSubviews() {
@@ -114,12 +116,13 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
+        cell.delegate = self
         cell.configure(with: assets[indexPath.item])
-        
+        print("value of global mute from configure func-",isGlobalMute)
         if indexPath.item != currentlyPlayingCellIndex {
-            cell.stopVideoPlayback()
+            cell.stopVideoPlayback(with: isGlobalMute)
         } else {
-            cell.startVideoPlayback()
+            cell.startVideoPlayback(with: isGlobalMute)
         }
         return cell
     }
@@ -129,14 +132,15 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
             currentlyPlayingCellIndex = indexPath.item
             print("from will display cell func-",indexPath.item)
             print(assets[indexPath.item].assetDetails.id)
-            videoCell.startVideoPlayback()
+            videoCell.startVideoPlayback(with: isGlobalMute)
+            print("value of global mute while displaying each cell is-",isGlobalMute)
         }
         
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let videoCell = cell as? CollectionViewCell {
-            videoCell.stopVideoPlayback()
+            videoCell.stopVideoPlayback(with: isGlobalMute)
         }
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -155,7 +159,7 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
 
             if collectionView.indexPathsForVisibleItems.contains(nextIndexPath) {
                 print("stopping video playback at index- ", nextIndexPath)
-                nextCell.stopVideoPlayback()
+                nextCell.stopVideoPlayback(with: isGlobalMute)
             }
         }
         
@@ -172,4 +176,11 @@ extension ViewController: UIScrollViewDelegate{
             let adjustedOffset = newIndex * cellHeight
             targetContentOffset.pointee.y = adjustedOffset
         }
+}
+
+extension ViewController: muteUnmuteDelegate {
+    func didToggleMuteState(for cell: CollectionViewCell) {
+        isGlobalMute.toggle()
+    }
+    
 }
