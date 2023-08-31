@@ -34,8 +34,6 @@ class ViewController: UIViewController {
         return view
     }()
     
-    
-    
     private var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -47,7 +45,6 @@ class ViewController: UIViewController {
         collectionView.showsVerticalScrollIndicator = false
         collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: CollectionViewCell.identifier)
         return collectionView
-        
     }()
     
     override func viewDidLoad() {
@@ -55,7 +52,7 @@ class ViewController: UIViewController {
         setupTopBar()
         setupBottomBar()
         setupCollectionView()
-
+        
         APICaller.shared.fetchVideos(with: urlString) { [weak self] items in
             DispatchQueue.main.async {
                 self?.assets = items
@@ -63,7 +60,6 @@ class ViewController: UIViewController {
             }
         }
         collectionView.contentInsetAdjustmentBehavior = .never
-        
         print("the value of isGlobalMute is-",isGlobalMute)
     }
     
@@ -135,7 +131,6 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
             videoCell.startVideoPlayback(with: isGlobalMute)
             print("value of global mute while displaying each cell is-",isGlobalMute)
         }
-        
     }
     
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -156,26 +151,24 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
         if let nextCell = collectionView.cellForItem(at: nextIndexPath) as? CollectionViewCell {
             // Check if the nextCell is currently visible on the screen
             print("before the visible item contains-",nextIndexPath.row)
-
+            
             if collectionView.indexPathsForVisibleItems.contains(nextIndexPath) {
                 print("stopping video playback at index- ", nextIndexPath)
                 nextCell.stopVideoPlayback(with: isGlobalMute)
             }
         }
-        
     }
 }
 
-
 extension ViewController: UIScrollViewDelegate{
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-            let cellHeight = collectionView.bounds.height
-            let offset = targetContentOffset.pointee.y
-            let currentIndex = round(offset / cellHeight)
-            let newIndex = min(max(0, currentIndex), CGFloat(assets.count - 1))
-            let adjustedOffset = newIndex * cellHeight
-            targetContentOffset.pointee.y = adjustedOffset
-        }
+        let cellHeight = collectionView.bounds.height
+        let offset = targetContentOffset.pointee.y
+        let currentIndex = round(offset / cellHeight)
+        let newIndex = min(max(0, currentIndex), CGFloat(assets.count - 1))
+        let adjustedOffset = newIndex * cellHeight
+        targetContentOffset.pointee.y = adjustedOffset
+    }
 }
 
 extension ViewController: muteUnmuteDelegate {
