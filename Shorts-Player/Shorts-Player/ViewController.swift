@@ -60,7 +60,6 @@ class ViewController: UIViewController {
             }
         }
         collectionView.contentInsetAdjustmentBehavior = .never
-        print("the value of isGlobalMute is-",isGlobalMute)
     }
     
     override func viewDidLayoutSubviews() {
@@ -114,7 +113,6 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
         cell.delegate = self
         cell.configure(with: assets[indexPath.item])
-        print("value of global mute from configure func-",isGlobalMute)
         if indexPath.item != currentlyPlayingCellIndex {
             cell.stopVideoPlayback(with: isGlobalMute)
         } else {
@@ -129,7 +127,6 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
             print("from will display cell func-",indexPath.item)
             print(assets[indexPath.item].assetDetails.id)
             videoCell.startVideoPlayback(with: isGlobalMute)
-            print("value of global mute while displaying each cell is-",isGlobalMute)
         }
     }
     
@@ -151,7 +148,6 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
         if let nextCell = collectionView.cellForItem(at: nextIndexPath) as? CollectionViewCell {
             // Check if the nextCell is currently visible on the screen
             print("before the visible item contains-",nextIndexPath.row)
-            
             if collectionView.indexPathsForVisibleItems.contains(nextIndexPath) {
                 print("stopping video playback at index- ", nextIndexPath)
                 nextCell.stopVideoPlayback(with: isGlobalMute)
