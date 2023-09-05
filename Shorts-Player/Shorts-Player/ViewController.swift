@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 struct VideoModel {
     let caption: String
@@ -112,6 +113,7 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
         cell.delegate = self
+        cell.myListDelegate = self
         cell.configure(with: assets[indexPath.item])
         if indexPath.item != currentlyPlayingCellIndex {
             cell.stopVideoPlayback(with: isGlobalMute)
@@ -122,11 +124,14 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
         if let videoCell = cell as? CollectionViewCell {
             currentlyPlayingCellIndex = indexPath.item
-            print("from will display cell func-",indexPath.item)
             print(assets[indexPath.item].assetDetails.id)
-            videoCell.startVideoPlayback(with: isGlobalMute)
+            DispatchQueue.main.async {
+                videoCell.startVideoPlayback(with: self.isGlobalMute)
+                videoCell.isAddedToWatchlist()
+            }
         }
     }
     
@@ -143,13 +148,10 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
     
     func stopVideoPlaybackForNextCell(at indexPath: IndexPath) {
         let nextIndexPath = IndexPath(item: indexPath.item + 1, section: .zero)
-        print("inside the stopplayback func called by",indexPath.row)
         // Check if the nextIndexPath is within the bounds of the assets array
         if let nextCell = collectionView.cellForItem(at: nextIndexPath) as? CollectionViewCell {
             // Check if the nextCell is currently visible on the screen
-            print("before the visible item contains-",nextIndexPath.row)
             if collectionView.indexPathsForVisibleItems.contains(nextIndexPath) {
-                print("stopping video playback at index- ", nextIndexPath)
                 nextCell.stopVideoPlayback(with: isGlobalMute)
             }
         }
@@ -170,5 +172,75 @@ extension ViewController: UIScrollViewDelegate{
 extension ViewController: muteUnmuteDelegate {
     func didToggleMuteState(for cell: CollectionViewCell) {
         isGlobalMute.toggle()
+    }
+}
+
+extension ViewController: myListButtonTapped {
+    func didToggleMyListButton(id: String, completion: @escaping (Bool) -> Void) {
+        let result = addToWatchlist(id: id)
+        completion(result)
+    }
+    
+    func checkItemInWatchlist(id: String, completion: @escaping (Bool) -> Void) {
+        let result = isAddedToWatchlist(id: id)
+        completion(result)
+    }
+}
+
+extension ViewController {
+    func addToWatchlist(id: String) -> Bool {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false}
+        let managedContext = appDelegate.persistentContainer.viewContext
+        var isAdded = false
+        let fetchRequest: NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id)
+        
+        do {
+            let movies = try managedContext.fetch(fetchRequest)
+            if let movie = movies.first {
+                managedContext.delete(movie)
+                try managedContext.save()
+                isAdded = false
+            } else {
+                let movie = MovieEntity(context: managedContext)
+                movie.id = id
+                movie.isAddedToWatchlist = true
+                try managedContext.save()
+                isAdded = true
+                print("Newly Added Movie - ID: \(movie.id ?? ""), isAddedToWatchlist: \(isAdded)")
+            }
+            
+            let allMoviesFetchRequest: NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
+            let allMovies = try managedContext.fetch(allMoviesFetchRequest)
+            
+            // Print details of all the MovieEntity objects
+            for movie in allMovies {
+                print("Movie - ID: \(movie.id ?? ""), isAddedToWatchlist: \(movie.isAddedToWatchlist)")
+            }
+            
+        } catch let error as NSError {
+            print("Could not update movie: \(error)")
+        }
+        return isAdded
+    }
+    
+    func isAddedToWatchlist(id: String) -> Bool {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return false}
+        let managedContext = appDelegate.persistentContainer.viewContext
+        var isAdded = false
+        let fetchRequest: NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %@", id)
+        do {
+            let movies = try managedContext.count(for: fetchRequest)
+            if movies > 0 {
+                isAdded = true
+            }
+            else {
+                isAdded = false
+            }
+        } catch {
+            print("failed")
+        }
+        return isAdded
     }
 }

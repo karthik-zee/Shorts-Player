@@ -13,8 +13,16 @@ protocol muteUnmuteDelegate:AnyObject {
     func didToggleMuteState(for cell: CollectionViewCell)
 }
 
+protocol myListButtonTapped: AnyObject {
+    func didToggleMyListButton(id: String,completion: @escaping (Bool) -> Void)
+    func checkItemInWatchlist(id: String,completion: @escaping (Bool) -> Void)
+}
+
 class CollectionViewCell: UICollectionViewCell {
     weak var delegate: muteUnmuteDelegate?
+    weak var myListDelegate: myListButtonTapped?
+    var model: Asset?
+    
     var isPlaying: Bool = false {
         didSet {
             if isPlaying {
@@ -24,7 +32,6 @@ class CollectionViewCell: UICollectionViewCell {
             }
         }
     }
-    var movieIdForCoredata = ""
     
     static let identifier = "CollectionViewCell"
     
@@ -43,6 +50,7 @@ class CollectionViewCell: UICollectionViewCell {
     private let onClickPlaylist = "onClickPlaylist"
     private let share = "share"
     private let onClickShare = "onClickShare"
+    private let addedToWatchlist = "addedToWatchlist"
     
     lazy var watchStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [watchButton, watchLabel])
@@ -79,6 +87,7 @@ class CollectionViewCell: UICollectionViewCell {
     lazy var myListButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: playlist), for: .normal)
+        button.setImage(UIImage(named: addedToWatchlist), for: .selected)
         button.addTarget(self, action: #selector(myListButtonTapped), for: .touchUpInside)
         return button
     }()
@@ -205,8 +214,6 @@ class CollectionViewCell: UICollectionViewCell {
         avPlayer?.pause()
         playButtonOverlay.isHidden = true
         avPlayer?.seek(to: .zero)
-        print("inside prepare for resuse func-")
-        
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -423,63 +430,17 @@ class CollectionViewCell: UICollectionViewCell {
     }
     
     @objc private func myListButtonTapped() {
-        myListButton.isSelected.toggle()
-        var isAddedToWatchlistAfterConfigure:Bool = false
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        
-        let fetchRequest: NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %@", movieIdForCoredata)
-        
-        do {
-            let movies = try managedContext.fetch(fetchRequest)
-            if let movie = movies.first {
-                print("movie present in core data and is being toggled")
-                // Toggle the value
-                movie.isAddedToWatchlist.toggle()
-                try managedContext.save()
-                print("boolean value of isAddedTOwatchlist inside if block @objc func -",movie.isAddedToWatchlist)
-                isAddedToWatchlistAfterConfigure = movie.isAddedToWatchlist
-                
-                DispatchQueue.main.async {
-                    if(movie.isAddedToWatchlist){
-                        self.myListButton.setImage(UIImage(named: "addedToWatchlist"), for: .normal)
-                    }
-                    else{
-                        self.myListButton.setImage(UIImage(named: "playlist"), for: .normal)
-                    }
+        print("inside mylist button tapped  @objc func")
+        if let model = self.model{
+            print("model",model)
+            myListDelegate?.didToggleMyListButton(id: model.assetDetails.id) { success in
+                if success {
+                    self.myListButton.isSelected = true
                 }
-                print("after Configure updated the isAddedToWatchlist in if block-",isAddedToWatchlistAfterConfigure)
-                // Print details of the updated movie
-                print("Updated Movie - ID: \(movie.id ?? ""), isAddedToWatchlist: \(movie.isAddedToWatchlist)")
-                // Update the UI to reflect the change (reload collection view or update specific cell)
-            } else {
-                print("movie not present in core data")
-                // Create a new movie entity and set isAddedToWatchlist to true
-                let movie = MovieEntity(context: managedContext)
-                movie.id = movieIdForCoredata
-                movie.isAddedToWatchlist = true
-                isAddedToWatchlistAfterConfigure = movie.isAddedToWatchlist
-                try managedContext.save()
-                DispatchQueue.main.async {
-                    if(movie.isAddedToWatchlist){
-                        self.myListButton.setImage(UIImage(named: "addedToWatchlist"), for: .normal)
-                    }
+                else {
+                    self.myListButton.isSelected = false
                 }
-                // Print details of the newly added movie
-                print("Newly Added Movie - ID: \(movie.id ?? ""), isAddedToWatchlist: \(movie.isAddedToWatchlist)")
             }
-            
-            let allMoviesFetchRequest: NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
-            let allMovies = try managedContext.fetch(allMoviesFetchRequest)
-            
-            // Print details of all the MovieEntity objects
-            for movie in allMovies {
-                print("Movie - ID: \(movie.id ?? ""), isAddedToWatchlist: \(movie.isAddedToWatchlist)")
-            }
-            
-        } catch let error as NSError {
-            print("Could not update movie: \(error)")
         }
     }
     
@@ -513,15 +474,27 @@ class CollectionViewCell: UICollectionViewCell {
         UIControl().sendAction(#selector(NSXPCConnection.suspend), to: UIApplication.shared, for: nil)
     }
     
+    func isAddedToWatchlist() {
+        if let model = self.model{
+            myListDelegate?.checkItemInWatchlist(id: model.assetDetails.id) { success in
+                if success {
+                    self.myListButton.isSelected = true
+                }
+                else {
+                    self.myListButton.isSelected = false
+                }
+            }
+        }
+    }
+    
     public func configure(with model:Asset){
-        var isAddedToWatchlist: Bool
         movieDescriptionLabel.text = model.assetDetails.description
         titleLabel.text = model.assetDetails.title
         genreLabel.text = "Action"
         ratingLabel.text = "7.0"
         videoURL = model.assetDetails.videoUri.avcUri
         playButtonOverlay.isHidden = true
-        movieIdForCoredata = model.assetDetails.id
+        self.model = model
         if let avAssetURL = URL(string: videoURL) {
             let asset = AVURLAsset(url: avAssetURL)
             let playerItem = AVPlayerItem(asset: asset)
@@ -533,30 +506,6 @@ class CollectionViewCell: UICollectionViewCell {
                 volumeMuteButton.setImage(UIImage(named: "volumeIcon"), for: .normal)
             }
         }
-        
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
-        let managedContext = appDelegate.persistentContainer.viewContext
-        let fetchRequest: NSFetchRequest<MovieEntity> = MovieEntity.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "id == %@", movieIdForCoredata)
-        print("for item - ", movieIdForCoredata)
-        do{
-            let movies = try managedContext.fetch(fetchRequest)
-            if let movie = movies.first {
-                isAddedToWatchlist = movie.isAddedToWatchlist
-                print("isaddedtoWatchlist inside configure func -",isAddedToWatchlist)
-                DispatchQueue.main.async {
-                    if isAddedToWatchlist {
-                        print("inside configure - if block setting image to button")
-                        self.myListButton.setImage(UIImage(named: "addedToWatchlist"), for: .normal)
-                    } else {
-                        print("inside configure - else block setting unselected image")
-                        self.myListButton.setImage(UIImage(named: "playlist"), for: .normal)
-                    }
-                }
-            }
-        }
-        catch let error as NSError {
-            print("Could not update movie: \(error)")
-        }
     }
 }
+
