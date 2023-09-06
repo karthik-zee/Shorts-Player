@@ -445,21 +445,44 @@ class CollectionViewCell: UICollectionViewCell {
     }
     
     @objc private func shareButtonTapped() {
-        //function body to handle sharebutton tap
+        guard let parentViewController = findParentViewController() else {
+            return
+        }
+        guard let image = UIImage(systemName: "bell") , let url = URL(string: "https://www.google.com") else {return }
+        let shareSheetVC = UIActivityViewController(
+            activityItems: [
+                image,
+                url,
+                //whatsAppUrl
+            ],
+            applicationActivities: nil
+        )
+        parentViewController.present(shareSheetVC, animated: true)
+    }
+    
+    private func findParentViewController() -> UIViewController? {
+        var parentResponder: UIResponder? = self
+        while let responder = parentResponder {
+            if let viewController = responder as? UIViewController {
+                return viewController
+            }
+            parentResponder = responder.next
+        }
+        return nil
     }
     
     @objc private func unmuteButtonTapped() {
-        if volumeMuteButton.currentImage == UIImage(named: "volumeIcon") {
+        if volumeMuteButton.currentImage == UIImage(named: volumeIcon) {
             avPlayer?.isMuted = true
             DispatchQueue.main.async {
-                self.volumeMuteButton.setImage(UIImage(named: "volumeMute"), for: .normal)
+                self.volumeMuteButton.setImage(UIImage(named: self.volumeMute), for: .normal)
             }
             delegate?.didToggleMuteState(for: self)
         }
         else{
             avPlayer?.isMuted = false
             DispatchQueue.main.async {
-                self.volumeMuteButton.setImage(UIImage(named: "volumeIcon"), for: .normal)
+                self.volumeMuteButton.setImage(UIImage(named: self.volumeIcon), for: .normal)
             }
             delegate?.didToggleMuteState(for: self)
         }
@@ -501,9 +524,9 @@ class CollectionViewCell: UICollectionViewCell {
             avPlayer?.replaceCurrentItem(with: playerItem)
             avPlayer?.play() // Play the new video
             if avPlayer?.isMuted == true {
-                volumeMuteButton.setImage(UIImage(named: "volumeMute"), for: .normal)
+                volumeMuteButton.setImage(UIImage(named: volumeMute), for: .normal)
             } else {
-                volumeMuteButton.setImage(UIImage(named: "volumeIcon"), for: .normal)
+                volumeMuteButton.setImage(UIImage(named: volumeIcon), for: .normal)
             }
         }
     }

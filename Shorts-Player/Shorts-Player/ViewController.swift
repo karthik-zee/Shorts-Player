@@ -12,12 +12,13 @@ struct VideoModel {
     let caption: String
 }
 
-let customColor = UIColor(red: 15/255.0, green: 6/255.0, blue: 23/255.0, alpha: 1.0)
+let customColor = UIColor(red: 0.059, green: 0.0235, blue: 0.09, alpha: 1.0)
 
 class ViewController: UIViewController {
     private var isGlobalMute: Bool = false
     var currentlyPlayingCell: CollectionViewCell?
-    
+    private var topBarHeight: CGFloat = 50
+    private var bottomBarHeight: CGFloat = 50
     private var currentlyPlayingCellIndex: Int = 0
     private var urlString = "https://zshorts-dev.zee5.com/v1/zShorts"
     
@@ -63,10 +64,6 @@ class ViewController: UIViewController {
         collectionView.contentInsetAdjustmentBehavior = .never
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-    }
-    
     private func setupTopBar(){
         view.addSubview(topBar)
         topBar.translatesAutoresizingMaskIntoConstraints = false
@@ -74,7 +71,7 @@ class ViewController: UIViewController {
             topBar.topAnchor.constraint(equalTo: view.topAnchor),
             topBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             topBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            topBar.heightAnchor.constraint(equalToConstant: 50)
+            topBar.heightAnchor.constraint(equalToConstant: topBarHeight)
         ])
     }
     
@@ -82,7 +79,7 @@ class ViewController: UIViewController {
         view.addSubview(bottomBar)
         bottomBar.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            bottomBar.heightAnchor.constraint(equalToConstant: 50),
+            bottomBar.heightAnchor.constraint(equalToConstant: bottomBarHeight),
             bottomBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             bottomBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             bottomBar.bottomAnchor.constraint(equalTo: view.bottomAnchor)
@@ -97,10 +94,10 @@ class ViewController: UIViewController {
         view.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: topBar.bottomAnchor,constant: 5),
+            collectionView.topAnchor.constraint(equalTo: topBar.bottomAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: bottomBar.topAnchor,constant: -5)
+            collectionView.bottomAnchor.constraint(equalTo: bottomBar.topAnchor)
         ])
     }
 }
