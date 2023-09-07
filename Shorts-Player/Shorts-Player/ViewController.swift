@@ -116,6 +116,7 @@ class ViewController: UIViewController {
     lazy var volumeMuteButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: volumeIcon), for: .normal)
+        button.setImage(UIImage(named: volumeMute), for: .selected)
         return button
     }()
     
@@ -151,13 +152,13 @@ class ViewController: UIViewController {
     }
     
     @objc private func unmuteButtonTapped() {
-        if volumeMuteButton.currentImage == UIImage(named: volumeIcon) {
+        if !volumeMuteButton.isSelected {
             isGlobalMute = true
-            volumeMuteButton.setImage(UIImage(named: self.volumeMute), for: .normal)
+            volumeMuteButton.isSelected = true
         }
         else{
             isGlobalMute = false
-            volumeMuteButton.setImage(UIImage(named: self.volumeIcon), for: .normal)
+            volumeMuteButton.isSelected = false
         }
         NotificationCenter.default.post(name: Notification.Name("MuteStateChanged"), object: nil , userInfo: ["isMuted" : isGlobalMute])
     }
