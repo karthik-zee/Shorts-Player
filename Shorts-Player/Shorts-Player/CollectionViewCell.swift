@@ -41,10 +41,25 @@ class CollectionViewCell: UICollectionViewCell {
     private let share = "share"
     private let onClickShare = "onClickShare"
     private let addedToWatchlist = "addedToWatchlist"
+    
     private var playButtonWidthConstraint: CGFloat = 60
     private var playButtonHeightConstraint: CGFloat = 60
+    
     private var iconStackTrailingConstraint: CGFloat = -24
     private var iconStackBottomConstraint: CGFloat = -28
+    
+    private var progressIndicatorHeightConstraint: CGFloat = 5
+    
+    private var horizontalStackViewTopConstraint: CGFloat = 15
+    private var horizontalStackViewLeadingConstraint: CGFloat = 24
+    private var horizontalStackViewTrailingConstraint: CGFloat = -89
+    private var horizontalStackViewBottomConstraint: CGFloat = -104
+    
+    private var verticalStackViewBottomConstraint: CGFloat = -24
+    private var verticalStackViewLeadingConstraint: CGFloat = 24
+    private var verticalStackViewTrailingConstraint: CGFloat = -89
+    
+    private var iconStackViewSpacing: CGFloat = 10
     
     lazy var watchStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [watchButton, watchLabel])
@@ -272,7 +287,7 @@ class CollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             progressIndicator.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             progressIndicator.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            progressIndicator.heightAnchor.constraint(equalToConstant: 5)
+            progressIndicator.heightAnchor.constraint(equalToConstant: progressIndicatorHeightConstraint)
         ])
         
         progressIndicatorWidthConstraint = progressIndicator.widthAnchor.constraint(equalToConstant: 0)
@@ -351,10 +366,10 @@ class CollectionViewCell: UICollectionViewCell {
         contentView.addSubview(horizontalStackView) // Only horizontalStackView is needed
         horizontalStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            horizontalStackView.topAnchor.constraint(equalTo: movieDescriptionLabel.bottomAnchor, constant: 15), // Adjust the spacing as needed
-            horizontalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
-            horizontalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -89),
-            horizontalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -104)
+            horizontalStackView.topAnchor.constraint(equalTo: movieDescriptionLabel.bottomAnchor, constant: horizontalStackViewTopConstraint), // Adjust the spacing as needed
+            horizontalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: horizontalStackViewLeadingConstraint),
+            horizontalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: horizontalStackViewTrailingConstraint),
+            horizontalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: horizontalStackViewBottomConstraint)
         ])
         
         let verticalStackView = UIStackView(arrangedSubviews: [
@@ -367,9 +382,9 @@ class CollectionViewCell: UICollectionViewCell {
         contentView.addSubview(verticalStackView)
         verticalStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            verticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24),
-            verticalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
-            verticalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -89),
+            verticalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: verticalStackViewBottomConstraint),
+            verticalStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: verticalStackViewLeadingConstraint),
+            verticalStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: verticalStackViewTrailingConstraint),
         ])
     }
     
@@ -377,7 +392,7 @@ class CollectionViewCell: UICollectionViewCell {
         let iconStackView = UIStackView(arrangedSubviews: [watchStackView, myListStackView, shareStackView])
         iconStackView.axis = .vertical
         iconStackView.alignment = .center
-        iconStackView.spacing = 10
+        iconStackView.spacing = iconStackViewSpacing
         
         contentView.addSubview(iconStackView)
         iconStackView.translatesAutoresizingMaskIntoConstraints = false
