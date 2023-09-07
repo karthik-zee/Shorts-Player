@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import AVFoundation
 
 struct VideoModel {
     let caption: String
@@ -21,6 +22,15 @@ class ViewController: UIViewController {
     private var bottomBarHeight: CGFloat = 50
     private var currentlyPlayingCellIndex: Int = 0
     private var urlString = "https://zshorts-dev.zee5.com/v1/zShorts"
+    private let volumeMute = "volumeMute"
+    private let volumeIcon = "volumeIcon"
+    private let chevronButton = "chevronButton"
+    private let topIconsHeight: CGFloat = 40
+    private let topIconsWidth: CGFloat = 40
+    private let volumeButtonTrailingConstraint: CGFloat = -24
+    private let volumeButtonTopConstraint: CGFloat = 66
+    private let chevronButtonLeadingConstraint: CGFloat = 16
+    private let chevronButtonTopContraint: CGFloat = 66
     
     var assets: [Asset] = [Asset]()
     
@@ -54,6 +64,8 @@ class ViewController: UIViewController {
         setupTopBar()
         setupBottomBar()
         setupCollectionView()
+        setupVolumeMuteButton()
+        setupChevronButton()
         
         APICaller.shared.fetchVideos(with: urlString) { [weak self] items in
             DispatchQueue.main.async {
@@ -100,6 +112,59 @@ class ViewController: UIViewController {
             collectionView.bottomAnchor.constraint(equalTo: bottomBar.topAnchor)
         ])
     }
+    
+    lazy var volumeMuteButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: volumeIcon), for: .normal)
+        return button
+    }()
+    
+    
+    private func setupVolumeMuteButton() {
+        volumeMuteButton.addTarget(self, action: #selector(unmuteButtonTapped), for: .touchUpInside)
+        view.addSubview(volumeMuteButton)
+        volumeMuteButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            volumeMuteButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: volumeButtonTrailingConstraint),
+            volumeMuteButton.topAnchor.constraint(equalTo: view.topAnchor, constant: volumeButtonTopConstraint),
+            volumeMuteButton.widthAnchor.constraint(equalToConstant: topIconsWidth), // Set width
+            volumeMuteButton.heightAnchor.constraint(equalToConstant: topIconsHeight) // Set height
+        ])
+    }
+    
+    private func setupChevronButton(){
+        let chevronLeftButton: UIButton = {
+            let button = UIButton()
+            button.setImage(UIImage(named: chevronButton), for: .normal)
+            button.addTarget(self, action: #selector(chevronButtonTapped), for: .touchUpInside)
+            return button
+        }()
+        
+        view.addSubview(chevronLeftButton)
+        chevronLeftButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            chevronLeftButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: chevronButtonLeadingConstraint),
+            chevronLeftButton.topAnchor.constraint(equalTo: view.topAnchor, constant: chevronButtonTopContraint),
+            chevronLeftButton.widthAnchor.constraint(equalToConstant: topIconsWidth), // Set width
+            chevronLeftButton.heightAnchor.constraint(equalToConstant: topIconsHeight) // Set height
+        ])
+    }
+    
+    @objc private func unmuteButtonTapped() {
+        if volumeMuteButton.currentImage == UIImage(named: volumeIcon) {
+            isGlobalMute = true
+            volumeMuteButton.setImage(UIImage(named: self.volumeMute), for: .normal)
+        }
+        else{
+            isGlobalMute = false
+            volumeMuteButton.setImage(UIImage(named: self.volumeIcon), for: .normal)
+        }
+        NotificationCenter.default.post(name: Notification.Name("MuteStateChanged"), object: nil , userInfo: ["isMuted" : isGlobalMute])
+    }
+    
+    @objc private func chevronButtonTapped(){
+        UIControl().sendAction(#selector(NSXPCConnection.suspend), to: UIApplication.shared, for: nil)
+    }
 }
 
 extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,UICollectionViewDelegateFlowLayout {
@@ -109,7 +174,6 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
-        cell.delegate = self
         cell.myListDelegate = self
         cell.configure(with: assets[indexPath.item])
         if indexPath.item != currentlyPlayingCellIndex {
@@ -163,12 +227,6 @@ extension ViewController: UIScrollViewDelegate{
         let newIndex = min(max(0, currentIndex), CGFloat(assets.count - 1))
         let adjustedOffset = newIndex * cellHeight
         targetContentOffset.pointee.y = adjustedOffset
-    }
-}
-
-extension ViewController: muteUnmuteDelegate {
-    func didToggleMuteState(for cell: CollectionViewCell) {
-        isGlobalMute.toggle()
     }
 }
 

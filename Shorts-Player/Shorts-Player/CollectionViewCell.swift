@@ -9,17 +9,12 @@ import UIKit
 import AVFoundation
 import CoreData
 
-protocol muteUnmuteDelegate:AnyObject {
-    func didToggleMuteState(for cell: CollectionViewCell)
-}
-
 protocol myListButtonTapped: AnyObject {
     func didToggleMyListButton(id: String,completion: @escaping (Bool) -> Void)
     func checkItemInWatchlist(id: String,completion: @escaping (Bool) -> Void)
 }
 
 class CollectionViewCell: UICollectionViewCell {
-    weak var delegate: muteUnmuteDelegate?
     weak var myListDelegate: myListButtonTapped?
     var model: Asset?
     
@@ -34,16 +29,11 @@ class CollectionViewCell: UICollectionViewCell {
     }
     
     static let identifier = "CollectionViewCell"
-    
     public var videoURL:String = "https://zshorts-dev.zee5.com/zshorts/file2/index.m3u8"
-    
     private var progressIndicatorWidthConstraint: NSLayoutConstraint?
     private var avPlayer: AVPlayer?
     private var avPlayerLayer: AVPlayerLayer?
-    private let volumeMute = "volumeMute"
-    private let volumeIcon = "volumeIcon"
     private let playButton = "playButton"
-    private let chevronButton = "chevronButton"
     private let watch = "watch"
     private let onClickWatch = "onClickWatch"
     private let playlist = "playlist"
@@ -51,6 +41,10 @@ class CollectionViewCell: UICollectionViewCell {
     private let share = "share"
     private let onClickShare = "onClickShare"
     private let addedToWatchlist = "addedToWatchlist"
+    private var playButtonWidthConstraint: CGFloat = 60
+    private var playButtonHeightConstraint: CGFloat = 60
+    private var iconStackTrailingConstraint: CGFloat = -24
+    private var iconStackBottomConstraint: CGFloat = -28
     
     lazy var watchStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [watchButton, watchLabel])
@@ -144,13 +138,6 @@ class CollectionViewCell: UICollectionViewCell {
         return view
     }()
     
-    lazy var volumeMuteButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(named: volumeMute), for: .selected)
-        button.setImage(UIImage(named: volumeIcon), for: .normal)
-        return button
-    }()
-    
     lazy var movieDescriptionLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .left
@@ -203,8 +190,6 @@ class CollectionViewCell: UICollectionViewCell {
         setupVideoView()
         setupSubviews()
         setupIconStackView()
-        setupChevronButton()
-        setupVolumeMuteButton()
         setupIconViews()
         setupProgressIndicator()
     }
@@ -229,10 +214,8 @@ class CollectionViewCell: UICollectionViewCell {
     func stopVideoPlayback(with isMuted: Bool) {
         if isMuted {
             avPlayer?.isMuted = true
-            volumeMuteButton.setImage(UIImage(named: "volumeMute"), for: .normal)
-        } else {
-            volumeMuteButton.setImage(UIImage(named: "volumeIcon"), for: .normal)
         }
+        NotificationCenter.default.removeObserver(self)
         avPlayer?.pause()
     }
     
@@ -240,15 +223,26 @@ class CollectionViewCell: UICollectionViewCell {
         DispatchQueue.main.async {
             if isMuted {
                 self.avPlayer?.isMuted = true
-                self.volumeMuteButton.setImage(UIImage(named: "volumeMute"), for: .normal)
             } else {
                 self.avPlayer?.isMuted = false
-                self.volumeMuteButton.setImage(UIImage(named: "volumeIcon"), for: .normal)
             }
         }
+        NotificationCenter.default.addObserver(self, selector: #selector(videoDidFinishPlaying(_:)), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: nil)  
+        NotificationCenter.default.addObserver(self, selector: #selector(updateMuteState), name: Notification.Name("MuteStateChanged"), object: nil)
         playButtonOverlay.isHidden = true
         // seek to zero if the cell has to be played from start again from will display method
         avPlayer?.seek(to: .zero)
+        avPlayer?.play()
+    }
+    
+    @objc func updateMuteState(_ notification: Notification) {
+        if let isMuted = notification.userInfo?["isMuted"] as? Bool {
+            avPlayer?.isMuted = isMuted
+        }
+    }
+    
+    @objc func videoDidFinishPlaying(_ notification: Notification) {
+        avPlayer?.seek(to: CMTime.zero)
         avPlayer?.play()
     }
     
@@ -336,8 +330,8 @@ class CollectionViewCell: UICollectionViewCell {
             // Constraints to center the play button overlay
             playButtonOverlay.centerXAnchor.constraint(equalTo: videoView.centerXAnchor),
             playButtonOverlay.centerYAnchor.constraint(equalTo: videoView.centerYAnchor),
-            playButtonOverlay.widthAnchor.constraint(equalToConstant: 60), // Set width
-            playButtonOverlay.heightAnchor.constraint(equalToConstant: 60) // Set height
+            playButtonOverlay.widthAnchor.constraint(equalToConstant: playButtonWidthConstraint), // Set width
+            playButtonOverlay.heightAnchor.constraint(equalToConstant: playButtonHeightConstraint) // Set height
         ])
     }
     
@@ -363,7 +357,6 @@ class CollectionViewCell: UICollectionViewCell {
             horizontalStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -104)
         ])
         
-        
         let verticalStackView = UIStackView(arrangedSubviews: [
             movieDescriptionLabel, horizontalStackView
         ])
@@ -380,37 +373,6 @@ class CollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    private func setupVolumeMuteButton() {
-        volumeMuteButton.isSelected = avPlayer?.isMuted ?? false
-        volumeMuteButton.addTarget(self, action: #selector(unmuteButtonTapped), for: .touchUpInside)
-        contentView.addSubview(volumeMuteButton)
-        volumeMuteButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            volumeMuteButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24),
-            volumeMuteButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            volumeMuteButton.widthAnchor.constraint(equalToConstant: 40), // Set width
-            volumeMuteButton.heightAnchor.constraint(equalToConstant: 40) // Set height
-        ])
-    }
-    
-    private func setupChevronButton(){
-        let chevronLeftButton: UIButton = {
-            let button = UIButton()
-            button.setImage(UIImage(named: chevronButton), for: .normal)
-            button.addTarget(self, action: #selector(chevronButtonTapped), for: .touchUpInside)
-            return button
-        }()
-        
-        contentView.addSubview(chevronLeftButton)
-        chevronLeftButton.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            chevronLeftButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            chevronLeftButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            chevronLeftButton.widthAnchor.constraint(equalToConstant: 40), // Set width
-            chevronLeftButton.heightAnchor.constraint(equalToConstant: 40) // Set height
-        ])
-    }
-    
     private func setupIconStackView() {
         let iconStackView = UIStackView(arrangedSubviews: [watchStackView, myListStackView, shareStackView])
         iconStackView.axis = .vertical
@@ -420,8 +382,8 @@ class CollectionViewCell: UICollectionViewCell {
         contentView.addSubview(iconStackView)
         iconStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            iconStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24),
-            iconStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -28)
+            iconStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: iconStackTrailingConstraint),
+            iconStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: iconStackBottomConstraint)
         ])
     }
     
@@ -471,30 +433,9 @@ class CollectionViewCell: UICollectionViewCell {
         return nil
     }
     
-    @objc private func unmuteButtonTapped() {
-        if volumeMuteButton.currentImage == UIImage(named: volumeIcon) {
-            avPlayer?.isMuted = true
-            DispatchQueue.main.async {
-                self.volumeMuteButton.setImage(UIImage(named: self.volumeMute), for: .normal)
-            }
-            delegate?.didToggleMuteState(for: self)
-        }
-        else{
-            avPlayer?.isMuted = false
-            DispatchQueue.main.async {
-                self.volumeMuteButton.setImage(UIImage(named: self.volumeIcon), for: .normal)
-            }
-            delegate?.didToggleMuteState(for: self)
-        }
-    }
-    
     @objc private func videoViewTapped() {
         togglePlayButtonOverlay()
         togglePlayPauseVideo()
-    }
-    
-    @objc private func chevronButtonTapped(){
-        UIControl().sendAction(#selector(NSXPCConnection.suspend), to: UIApplication.shared, for: nil)
     }
     
     func isAddedToWatchlist() {
@@ -523,12 +464,11 @@ class CollectionViewCell: UICollectionViewCell {
             let playerItem = AVPlayerItem(asset: asset)
             avPlayer?.replaceCurrentItem(with: playerItem)
             avPlayer?.play() // Play the new video
-            if avPlayer?.isMuted == true {
-                volumeMuteButton.setImage(UIImage(named: volumeMute), for: .normal)
-            } else {
-                volumeMuteButton.setImage(UIImage(named: volumeIcon), for: .normal)
-            }
         }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 }
 
