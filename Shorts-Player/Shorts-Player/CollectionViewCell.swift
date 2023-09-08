@@ -9,13 +9,18 @@ import UIKit
 import AVFoundation
 import CoreData
 
-protocol myListButtonTapped: AnyObject {
+protocol MyListDelegates: AnyObject {
     func didToggleMyListButton(id: String,completion: @escaping (Bool) -> Void)
     func checkItemInWatchlist(id: String,completion: @escaping (Bool) -> Void)
 }
 
+protocol ShareDelegate: AnyObject {
+    func presentShareSheet(videoURL:String , button: UIButton) -> Void
+}
+
 class CollectionViewCell: UICollectionViewCell {
-    weak var myListDelegate: myListButtonTapped?
+    weak var myListDelegate: MyListDelegates?
+    weak var shareDelegate: ShareDelegate?
     var model: Asset?
     
     var isPlaying: Bool = false {
@@ -148,7 +153,7 @@ class CollectionViewCell: UICollectionViewCell {
     
     lazy var videoView: UIView = {
         let view = UIView()
-        view.backgroundColor = .green
+        view.backgroundColor = .black
         var videoURL:String
         return view
     }()
@@ -410,31 +415,16 @@ class CollectionViewCell: UICollectionViewCell {
         print("inside mylist button tapped  @objc func")
         if let model = self.model{
             print("model",model)
-            myListDelegate?.didToggleMyListButton(id: model.assetDetails.id) { success in
-                if success {
-                    self.myListButton.isSelected = true
-                }
-                else {
-                    self.myListButton.isSelected = false
-                }
+            myListDelegate?.didToggleMyListButton(id: model.assetDetails.id) { [weak self] success in
+                self?.myListButton.isSelected = success
             }
         }
     }
     
     @objc private func shareButtonTapped() {
-        guard let parentViewController = findParentViewController() else {
-            return
+        if let videoUrl = URL(string: model?.assetDetails.videoUri.avcUri ?? ""){
+            shareDelegate?.presentShareSheet(videoURL: videoURL, button: shareButton)
         }
-        guard let image = UIImage(systemName: "bell") , let url = URL(string: "https://www.google.com") else {return }
-        let shareSheetVC = UIActivityViewController(
-            activityItems: [
-                image,
-                url,
-                //whatsAppUrl
-            ],
-            applicationActivities: nil
-        )
-        parentViewController.present(shareSheetVC, animated: true)
     }
     
     private func findParentViewController() -> UIViewController? {
@@ -455,13 +445,8 @@ class CollectionViewCell: UICollectionViewCell {
     
     func isAddedToWatchlist() {
         if let model = self.model{
-            myListDelegate?.checkItemInWatchlist(id: model.assetDetails.id) { success in
-                if success {
-                    self.myListButton.isSelected = true
-                }
-                else {
-                    self.myListButton.isSelected = false
-                }
+            myListDelegate?.checkItemInWatchlist(id: model.assetDetails.id) { [weak self] success in
+                self?.myListButton.isSelected = success
             }
         }
     }

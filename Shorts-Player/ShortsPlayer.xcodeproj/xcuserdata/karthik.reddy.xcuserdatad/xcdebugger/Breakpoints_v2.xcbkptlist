@@ -3,4 +3,84 @@
    uuid = "718A297E-CA2C-459E-9978-3DE83361F173"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A6E936A4-401C-4D40-B15A-0C46F01FE63D"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Shorts-Player/CollectionViewCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "25"
+            endingLineNumber = "25"
+            landmarkName = "CollectionViewCell"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  uuid = "A6E936A4-401C-4D40-B15A-0C46F01FE63D - 68c4197cb9bdae6"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ShortsPlayer.CollectionViewCell.isPlaying.getter : Swift.Bool"
+                  moduleName = "ShortsPlayer"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/karthik.reddy/Desktop/Shorts-Player-Proj/Shorts-Player/Shorts-Player/Shorts-Player/CollectionViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26"
+                  offsetFromSymbolStart = "84">
+               </Location>
+               <Location
+                  uuid = "A6E936A4-401C-4D40-B15A-0C46F01FE63D - a6613b2e04a882da"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ShortsPlayer.CollectionViewCell.isPlaying.setter : Swift.Bool"
+                  moduleName = "ShortsPlayer"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/karthik.reddy/Desktop/Shorts-Player-Proj/Shorts-Player/Shorts-Player/Shorts-Player/CollectionViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26"
+                  offsetFromSymbolStart = "120">
+               </Location>
+               <Location
+                  uuid = "A6E936A4-401C-4D40-B15A-0C46F01FE63D - 61d35e9fcbfb80eb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ShortsPlayer.CollectionViewCell.isPlaying.modify : Swift.Bool"
+                  moduleName = "ShortsPlayer"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/karthik.reddy/Desktop/Shorts-Player-Proj/Shorts-Player/Shorts-Player/Shorts-Player/CollectionViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26"
+                  offsetFromSymbolStart = "0">
+               </Location>
+               <Location
+                  uuid = "A6E936A4-401C-4D40-B15A-0C46F01FE63D - 5e3c81ef5bb94cda"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "ShortsPlayer.CollectionViewCell.isPlaying.modify : Swift.Bool with unmangled suffix &quot;.resume.0&quot;"
+                  moduleName = "ShortsPlayer"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/karthik.reddy/Desktop/Shorts-Player-Proj/Shorts-Player/Shorts-Player/Shorts-Player/CollectionViewCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "26"
+                  endingLineNumber = "26"
+                  offsetFromSymbolStart = "20">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

@@ -176,6 +176,7 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
         cell.myListDelegate = self
+        cell.shareDelegate = self
         cell.configure(with: assets[indexPath.item])
         if indexPath.item != currentlyPlayingCellIndex {
             cell.stopVideoPlayback(with: isGlobalMute)
@@ -231,7 +232,7 @@ extension ViewController: UIScrollViewDelegate{
     }
 }
 
-extension ViewController: myListButtonTapped {
+extension ViewController: MyListDelegates {
     func didToggleMyListButton(id: String, completion: @escaping (Bool) -> Void) {
         let result = addToWatchlist(id: id)
         completion(result)
@@ -298,5 +299,13 @@ extension ViewController {
             print("failed")
         }
         return isAdded
+    }
+}
+
+extension ViewController: ShareDelegate {
+    func presentShareSheet(videoURL: String, button: UIButton) {
+        let activityViewController = UIActivityViewController(activityItems: [videoURL], applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = button
+        self.present(activityViewController, animated: true, completion: nil)
     }
 }
