@@ -175,9 +175,9 @@ extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate,U
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCell.identifier, for: indexPath) as! CollectionViewCell
-        cell.myListDelegate = self
-        cell.shareDelegate = self
-        cell.configure(with: assets[indexPath.item])
+//        cell.myListDelegate = self
+//        cell.shareDelegate = self
+        cell.configure(with: assets[indexPath.item],myListDelegate: self, shareDelegate: self)
         if indexPath.item != currentlyPlayingCellIndex {
             cell.stopVideoPlayback(with: isGlobalMute)
         } else {

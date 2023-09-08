@@ -451,7 +451,7 @@ class CollectionViewCell: UICollectionViewCell {
         }
     }
     
-    public func configure(with model:Asset){
+    public func configure(with model:Asset,myListDelegate: MyListDelegates?, shareDelegate: ShareDelegate?){
         movieDescriptionLabel.text = model.assetDetails.description
         titleLabel.text = model.assetDetails.title
         genreLabel.text = "Action"
@@ -459,6 +459,8 @@ class CollectionViewCell: UICollectionViewCell {
         videoURL = model.assetDetails.videoUri.avcUri
         playButtonOverlay.isHidden = true
         self.model = model
+        self.myListDelegate = myListDelegate
+        self.shareDelegate = shareDelegate
         if let avAssetURL = URL(string: videoURL) {
             let asset = AVURLAsset(url: avAssetURL)
             let playerItem = AVPlayerItem(asset: asset)
