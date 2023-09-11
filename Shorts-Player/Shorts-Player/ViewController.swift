@@ -152,14 +152,8 @@ class ViewController: UIViewController {
     }
     
     @objc private func unmuteButtonTapped() {
-        if !volumeMuteButton.isSelected {
-            isGlobalMute = true
-            volumeMuteButton.isSelected = true
-        }
-        else{
-            isGlobalMute = false
-            volumeMuteButton.isSelected = false
-        }
+        isGlobalMute.toggle()
+        volumeMuteButton.isSelected.toggle()
         NotificationCenter.default.post(name: Notification.Name("MuteStateChanged"), object: nil , userInfo: ["isMuted" : isGlobalMute])
     }
     
